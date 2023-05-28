@@ -23,6 +23,7 @@ package com.andrei1058.bedwars.arena.tasks;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.TeamColor;
+import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.events.gameplay.EggBridgeBuildEvent;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.Misc;
@@ -90,43 +91,49 @@ public class EggBridgeTask implements Runnable {
 
             Block b2 = loc.clone().subtract(0.0D, 2.0D, 0.0D).getBlock();
             if (!Misc.isBuildProtected(b2.getLocation(), getArena())) {
-                if (b2.getType() == Material.AIR) {
-                    b2.setType(nms.woolMaterial());
-                    nms.setBlockTeamColor(b2, getTeamColor());
-                    getArena().addPlacedBlock(b2);
-                    Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b2));
-                    loc.getWorld().playEffect(b2.getLocation(), nms.eggBridge(), 3);
-                    Sounds.playSound("egg-bridge-block", getPlayer());
+                if (b2.getY() < arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y)) { // Attempt at fixing error.
+                    if (b2.getType() == Material.AIR) {
+                        b2.setType(nms.woolMaterial());
+                        nms.setBlockTeamColor(b2, getTeamColor());
+                        getArena().addPlacedBlock(b2);
+                        Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b2));
+                        loc.getWorld().playEffect(b2.getLocation(), nms.eggBridge(), 3);
+                        Sounds.playSound("egg-bridge-block", getPlayer());
+                    }
                 }
             }
 
             Block b3 = loc.clone().subtract(1.0D, 2.0D, 0.0D).getBlock();
             if (!Misc.isBuildProtected(b3.getLocation(), getArena())) {
-                if (b3.getType() == Material.AIR) {
-                    b3.setType(nms.woolMaterial());
-                    nms.setBlockTeamColor(b3, getTeamColor());
-                    getArena().addPlacedBlock(b3);
-                    Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b3));
-                    loc.getWorld().playEffect(b3.getLocation(), nms.eggBridge(), 3);
-                    Sounds.playSound("egg-bridge-block", getPlayer());
+                if (b3.getY() < arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y)) { // Attempt at fixing error.
+                    if (b3.getType() == Material.AIR) {
+                        b3.setType(nms.woolMaterial());
+                        nms.setBlockTeamColor(b3, getTeamColor());
+                        getArena().addPlacedBlock(b3);
+                        Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b3));
+                        loc.getWorld().playEffect(b3.getLocation(), nms.eggBridge(), 3);
+                        Sounds.playSound("egg-bridge-block", getPlayer());
+                    }
                 }
             }
 
             Block b4 = loc.clone().subtract(0.0D, 2.0D, 1.0D).getBlock();
             if (!Misc.isBuildProtected(b4.getLocation(), getArena())) {
-                if (b4.getType() == Material.AIR) {
-                    b4.setType(nms.woolMaterial());
-                    nms.setBlockTeamColor(b4, getTeamColor());
-                    getArena().addPlacedBlock(b4);
-                    Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b4));
-                    loc.getWorld().playEffect(b4.getLocation(), nms.eggBridge(), 3);
-                    Sounds.playSound("egg-bridge-block", getPlayer());
+                if (b4.getY() < arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y)) { // Attempt at fixing error.
+                    if (b4.getType() == Material.AIR) {
+                        b4.setType(nms.woolMaterial());
+                        nms.setBlockTeamColor(b4, getTeamColor());
+                        getArena().addPlacedBlock(b4);
+                        Bukkit.getPluginManager().callEvent(new EggBridgeBuildEvent(getTeamColor(), getArena(), b4));
+                        loc.getWorld().playEffect(b4.getLocation(), nms.eggBridge(), 3);
+                        Sounds.playSound("egg-bridge-block", getPlayer());
+                    }
                 }
             }
         }
     }
 
-    public void cancel(){
+    public void cancel() {
         task.cancel();
     }
 }
