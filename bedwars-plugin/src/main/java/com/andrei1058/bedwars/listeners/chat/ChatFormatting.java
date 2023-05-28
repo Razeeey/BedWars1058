@@ -74,6 +74,13 @@ public class ChatFormatting implements Listener {
         if (Arena.getArenaByPlayer(p) != null) {
             IArena a = Arena.getArenaByPlayer(p);
 
+            // spectator and team chat during restart
+            if (a.getStatus() == GameState.restarting) {
+                setRecipients(e, a.getPlayers(), a.getSpectators());
+                // Need to format?
+                return;
+            }
+
             // spectator chat
             if (a.isSpectator(p)) {
                 setRecipients(e, a.getSpectators());
@@ -130,6 +137,7 @@ public class ChatFormatting implements Listener {
         // multi arena lobby chat
         e.setFormat(parsePHolders(language.m(Messages.FORMATTING_CHAT_LOBBY), p, null));
     }
+
 
     private static String parsePHolders(String content, Player player, @Nullable ITeam team) {
         content = content
