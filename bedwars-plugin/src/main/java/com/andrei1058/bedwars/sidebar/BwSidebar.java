@@ -90,7 +90,7 @@ public class BwSidebar implements ISidebar {
             }, 2L);
         }
         handlePlayerList();
-        setHeaderFooter();
+        //setHeaderFooter();
     }
 
     public Player getPlayer() {
@@ -172,6 +172,11 @@ public class BwSidebar implements ISidebar {
             });
         }
         return lines;
+    }
+
+    @Override
+    public void giveUpdateTabFormat(@NotNull Player player, boolean skipStateCheck) {
+        
     }
 
     @Contract(pure = true)
@@ -379,6 +384,8 @@ public class BwSidebar implements ISidebar {
      * Will remove existing tab and give a new one based on game conditions list like spectator, team red, etc.
      * Will handle invisibility potion as well.
      */
+
+    /*
     public void giveUpdateTabFormat(@NotNull Player player, boolean skipStateCheck) {
         // if sidebar was not created
         if (handle == null) {
@@ -518,6 +525,7 @@ public class BwSidebar implements ISidebar {
 
     // Provide header and footer for current game state
     private void setHeaderFooter() {
+        return;
 //        if (isTabFormattingDisabled()) {
 //            return;
 //        }
@@ -568,6 +576,8 @@ public class BwSidebar implements ISidebar {
     }
 
     private @NotNull String getTabName(@NotNull ITeam team) {
+        return null;
+
         String tabName = TEAM_PREFIX + Base64.getEncoder().encodeToString((team.getName()).getBytes(StandardCharsets.UTF_8));
         if (tabName.length() > 16) {
             tabName = tabName.substring(0, 16);
@@ -577,6 +587,7 @@ public class BwSidebar implements ISidebar {
 
     @NotNull
     private SidebarLine getTabText(String path, Player targetPlayer, @Nullable HashMap<String, String> replacements) {
+        return null;
         List<String> strings = Language.getList(getPlayer(), path);
         if (strings.isEmpty()) {
             return new SidebarLine() {
@@ -618,7 +629,7 @@ public class BwSidebar implements ISidebar {
             lines[i] = strings.get(i);
         }
         return new SidebarLineAnimated(lines);
-    }
+    }*/
 
     /**
      * @return true if tab formatting is disabled for current sidebar/ arena stage
