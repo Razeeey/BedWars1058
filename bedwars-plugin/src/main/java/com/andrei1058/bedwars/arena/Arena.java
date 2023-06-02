@@ -265,6 +265,7 @@ public class Arena implements IArena {
                     error = true;
                 }
             }
+
         }
         if (yml.get("generator.Diamond") == null) {
             if (p != null) p.sendMessage("§cThere isn't set any Diamond generator on: " + name);

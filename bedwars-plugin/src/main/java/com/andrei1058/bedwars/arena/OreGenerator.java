@@ -148,7 +148,7 @@ public class OreGenerator implements IGenerator {
         }
 
         if (lastSpawn == 0) {
-            lastSpawn = delay;
+            lastSpawn = delay/4;
 
             if (spawnLimit != 0) {
                 int oreCount = 0;
@@ -162,7 +162,7 @@ public class OreGenerator implements IGenerator {
                         if (oreCount >= spawnLimit) return;
                     }
                 }
-                lastSpawn = delay;
+                lastSpawn = delay/4;
             }
             if (bwt == null) {
                 dropItem(location);
