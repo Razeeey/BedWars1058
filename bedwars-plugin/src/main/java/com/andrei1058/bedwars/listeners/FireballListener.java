@@ -46,11 +46,11 @@ public class FireballListener implements Listener {
 
     @EventHandler
     public void fireballHit(ProjectileHitEvent e) {
-        if(!(e.getEntity() instanceof Fireball)) return;
+        if (!(e.getEntity() instanceof Fireball)) return;
         Location location = e.getEntity().getLocation();
 
         ProjectileSource projectileSource = e.getEntity().getShooter();
-        if(!(projectileSource instanceof Player)) return;
+        if (!(projectileSource instanceof Player)) return;
         Player source = (Player) projectileSource;
 
         IArena arena = Arena.getArenaByPlayer(source);
@@ -62,21 +62,23 @@ public class FireballListener implements Listener {
         assert world != null;
         Collection<Entity> nearbyEntities = world
                 .getNearbyEntities(location, fireballExplosionSize, fireballExplosionSize, fireballExplosionSize);
-        for(Entity entity : nearbyEntities) {
-            if(!(entity instanceof Player)) continue;
+        for (Entity entity : nearbyEntities) {
+            if (!(entity instanceof Player)) continue;
             Player player = (Player) entity;
-            if(!getAPI().getArenaUtil().isPlaying(player)) continue;
+            if (!getAPI().getArenaUtil().isPlaying(player)) continue;
 
+            if (player.equals(source) || arena.getTeam(player).equals(arena.getTeam(source)))
+                return;
 
             Vector playerVector = player.getLocation().toVector();
             Vector normalizedVector = vector.subtract(playerVector).normalize();
             Vector horizontalVector = normalizedVector.multiply(fireballHorizontal);
             double y = normalizedVector.getY();
-            if(y < 0 ) y += 1.5;
-            if(y <= 0.5) {
-                y = fireballVertical*1.5; // kb for not jumping
+            if (y < 0) y += 1.5;
+            if (y <= 0.5) {
+                y = fireballVertical * 1.5; // kb for not jumping
             } else {
-                y = y*fireballVertical*1.5; // kb for jumping
+                y = y * fireballVertical * 1.5; // kb for jumping
             }
             player.setVelocity(horizontalVector.setY(y));
 
@@ -88,7 +90,7 @@ public class FireballListener implements Listener {
                 new LastHit(player, source, System.currentTimeMillis());
             }
 
-            if(player.equals(source)) {
+            /*if(player.equals(source)) {
                 if(damageSelf > 0) {
                     player.damage(damageSelf); // damage shooter
                 }
@@ -96,33 +98,33 @@ public class FireballListener implements Listener {
                 if(damageTeammates > 0) {
                     player.damage(damageTeammates); // damage teammates
                 }
-            } else {
-                if(damageEnemy > 0) {
-                    player.damage(damageEnemy); // damage enemies
-                }
+            } else {*/
+            if (damageEnemy > 0) {
+                player.damage(damageEnemy); // damage enemies
             }
+            //}
         }
     }
 
 
     @EventHandler
     public void fireballDirectHit(EntityDamageByEntityEvent e) {
-        if(!(e.getDamager() instanceof Fireball)) return;
-        if(!(e.getEntity() instanceof Player)) return;
+        if (!(e.getDamager() instanceof Fireball)) return;
+        if (!(e.getEntity() instanceof Player)) return;
 
-        if(Arena.getArenaByPlayer((Player) e.getEntity()) == null) return;
+        if (Arena.getArenaByPlayer((Player) e.getEntity()) == null) return;
 
         e.setCancelled(true);
     }
 
     @EventHandler
     public void fireballPrime(ExplosionPrimeEvent e) {
-        if(!(e.getEntity() instanceof Fireball)) return;
-        ProjectileSource shooter = ((Fireball)e.getEntity()).getShooter();
-        if(!(shooter instanceof Player)) return;
+        if (!(e.getEntity() instanceof Fireball)) return;
+        ProjectileSource shooter = ((Fireball) e.getEntity()).getShooter();
+        if (!(shooter instanceof Player)) return;
         Player player = (Player) shooter;
 
-        if(Arena.getArenaByPlayer(player) == null) return;
+        if (Arena.getArenaByPlayer(player) == null) return;
 
         e.setFire(fireballMakeFire);
     }

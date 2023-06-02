@@ -77,7 +77,7 @@ public class ChatFormatting implements Listener {
             // spectator and team chat during restart
             if (a.getStatus() == GameState.restarting) {
                 setRecipients(e, a.getPlayers(), a.getSpectators());
-                // Need to format?
+                e.setFormat(parsePHolders(language.m(Messages.FORMATTING_CHAT_WAITING), p, null)); // Make sure formatting looks good.
                 return;
             }
 

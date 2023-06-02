@@ -24,6 +24,7 @@ import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.shop.ShopHolo;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.arena.team.TeamColor;
+import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.entity.Despawnable;
 import com.andrei1058.bedwars.api.events.player.PlayerKillEvent;
 import com.andrei1058.bedwars.api.exceptions.InvalidEffectException;
@@ -753,6 +754,9 @@ public class v1_8_R3 extends VersionSupport {
 
     @Override
     public void placeTowerBlocks(org.bukkit.block.Block b, IArena a, TeamColor color, int x, int y, int z){
+        if (b.getLocation().getY() > a.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y))
+            return;
+
         b.getRelative(x, y, z).setType(Material.WOOL);
         setBlockTeamColor(b.getRelative(x, y, z), color);
         a.addPlacedBlock(b.getRelative(x, y, z));

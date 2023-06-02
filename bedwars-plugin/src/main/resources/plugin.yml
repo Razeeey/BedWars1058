@@ -1,8 +1,25 @@
 name: BedWars1058
 api-version: '1.13'
-version: ${project.version}
+version: 23.3
 author: andrei1058
-description: BedWars minigame by andrei1058
+description: 'BedWars minigame by andrei1058'
 main: com.andrei1058.bedwars.BedWars
-softdepend: [Vault,PlaceholderAPI,Citizens,Parties,SlimeWorldManager,VipFeatures,Enhanced-SlimeWorldManager,PartyAndFriends,Spigot-Party-API-PAF]
+softdepend:
+  - Vault
+  - PlaceholderAPI
+  - Citizens
+  - Parties
+  - SlimeWorldManager
+  - VipFeatures
+  - Enhanced-SlimeWorldManager
+  - PartyAndFriends
+  - Spigot-Party-API-PAF
 load: STARTUP
+polymart:
+  upload: { id: '25439', version: '23.3', type: RELEASE }
+  download: { id: '61613', time: 1679846481 }
+  resource: { id: '1152', title: BedWars1058, subtitle: 'Custom teams Custom scoreboards Custom shop individual language custom team upgrades.', price: '0.00', url: 'https://polymart.org/resource/bedwars1058.1152' }
+injector:
+  version: 1
+  nonce: dr-s9C02vUQ
+  token: MGE3MDA1MjU1NTgw

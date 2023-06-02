@@ -83,8 +83,6 @@ import com.andrei1058.bedwars.support.vipfeatures.VipFeatures;
 import com.andrei1058.bedwars.support.vipfeatures.VipListeners;
 import com.andrei1058.vipfeatures.api.IVipFeatures;
 import com.andrei1058.vipfeatures.api.MiniGameAlreadyRegistered;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -512,7 +510,7 @@ public class BedWars extends JavaPlugin {
         MoneyConfig.init();
 
         // bStats metrics
-        Metrics metrics = new Metrics(this, 1885);
+        /*Metrics metrics = new Metrics(this, 1885);
         metrics.addCustomChart(new SimplePie("server_type", () -> getServerType().toString()));
         metrics.addCustomChart(new SimplePie("default_language", () -> Language.getDefaultLanguage().getIso()));
         metrics.addCustomChart(new SimplePie("auto_scale", () -> String.valueOf(autoscale)));
@@ -520,7 +518,7 @@ public class BedWars extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("chat_adapter", () -> chat.getClass().getName()));
         metrics.addCustomChart(new SimplePie("level_adapter", () -> getLevelSupport().getClass().getName()));
         metrics.addCustomChart(new SimplePie("db_adapter", () -> getRemoteDatabase().getClass().getName()));
-        metrics.addCustomChart(new SimplePie("map_adapter", () -> String.valueOf(getAPI().getRestoreAdapter().getOwner().getName())));
+        metrics.addCustomChart(new SimplePie("map_adapter", () -> String.valueOf(getAPI().getRestoreAdapter().getOwner().getName())));*/
 
         if (Bukkit.getPluginManager().getPlugin("VipFeatures") != null) {
             try {
