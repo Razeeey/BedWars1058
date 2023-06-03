@@ -674,7 +674,7 @@ public class BwSidebar implements ISidebar {
     }
 
     public void handleHealthIcon() {
-        if (null == handle) {
+        /*if (null == handle) {
             return;
         }
 
@@ -717,7 +717,7 @@ public class BwSidebar implements ISidebar {
                     arena.getSpectators().forEach(player -> handle.setPlayerHealth(player, (int) Math.ceil(player.getHealth())));
                 }
             }
-        }, 20L);
+        }, 20L);*/
     }
 
     /**
