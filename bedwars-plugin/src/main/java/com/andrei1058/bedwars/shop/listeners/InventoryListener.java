@@ -81,7 +81,7 @@ public class InventoryListener implements Listener {
                     if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         cache.setElement(element.getSlot(), null);
                         //p.closeInventory(); // is this what needs to be removed?
-                        //ShopManager.getShop().open(p, cache, false);
+                        ShopManager.getShop().open(p, cache, false);
                         return;
                     }
                     element.getCategoryContent().execute(p, shopCache, element.getSlot());
