@@ -94,15 +94,12 @@ public class FireballListener implements Listener {
                 //if (damageSelf > 0) {
                     player.damage(damageSelf); // damage shooter
                 //}
-            } else if (arena.getTeam(player).equals(arena.getTeam(source))) {
+            } else if (!arena.getTeam(player).equals(arena.getTeam(source))) {
                 //if (damageTeammates > 0) {
                 //    player.damage(damageTeammates); // damage teammates
                 //}
-            } else {
-                //if (damageEnemy > 0) {
-                    player.damage(damageEnemy); // damage enemies
-                //}
-            }
+                player.damage(damageEnemy);
+            } 
         }
     }
 
