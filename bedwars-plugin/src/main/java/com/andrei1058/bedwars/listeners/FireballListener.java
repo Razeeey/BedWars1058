@@ -67,8 +67,8 @@ public class FireballListener implements Listener {
             Player player = (Player) entity;
             if (!getAPI().getArenaUtil().isPlaying(player)) continue;
 
-            if (player.equals(source) || arena.getTeam(player).equals(arena.getTeam(source)))
-                return;
+            if (arena.getTeam(player).equals(arena.getTeam(source)) && !player.equals(source))
+                continue;
 
             Vector playerVector = player.getLocation().toVector();
             Vector normalizedVector = vector.subtract(playerVector).normalize();
@@ -91,17 +91,13 @@ public class FireballListener implements Listener {
             }
 
             if (player.equals(source)) {
-                //if (damageSelf > 0) {
-                    player.damage(damageSelf); // damage shooter
-                //}
-            } else if (!arena.getTeam(player).equals(arena.getTeam(source))) {
-                //if (damageTeammates > 0) {
-                //    player.damage(damageTeammates); // damage teammates
-                //}
-                player.damage(damageEnemy);
-            } 
+                player.damage(damageSelf); // damage shooter
+            } else {
+                player.damage(damageEnemy); // damage enemies
+            }
         }
     }
+
 
 
     @EventHandler
