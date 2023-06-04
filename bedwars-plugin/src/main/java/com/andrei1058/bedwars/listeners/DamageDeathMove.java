@@ -191,6 +191,7 @@ public class DamageDeathMove implements Listener {
                                 if (tntDamageSelf > -1) {
                                     e.setDamage(tntDamageSelf);
                                 }
+
                                 // tnt jump. credits to feargames.it
                                 LivingEntity damaged = (LivingEntity) e.getEntity();
                                 Vector distance = damaged.getLocation().subtract(0, tntJumpBarycenterAlterationInY, 0).toVector().subtract(tnt.getLocation().toVector());
@@ -203,9 +204,10 @@ public class DamageDeathMove implements Listener {
                                 ITeam currentTeam = a.getTeam(p);
                                 ITeam damagerTeam = a.getTeam(damager);
                                 if (currentTeam.equals(damagerTeam)) {
-                                    if (tntDamageTeammates > -1) {
+                                    /*if (tntDamageTeammates > -1) {
                                         e.setDamage(tntDamageTeammates);
-                                    }
+                                    }*/
+                                    e.setCancelled(true);
                                 } else {
                                     if (tntDamageOthers > -1) {
                                         e.setDamage(tntDamageOthers);
