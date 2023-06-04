@@ -286,8 +286,8 @@ public class MenuBaseTrap implements MenuContent, EnemyBaseEnterTrap, TeamUpgrad
             if (team.isMember(arenaPlayer)) continue;
             if (team.getArena().isReSpawning(arenaPlayer)) continue;
             if (arenaPlayer.getLocation().distance(team.getBed()) <= team.getArena().getIslandRadius()) {
-                //team.getActiveTraps().remove(0).trigger(team, arenaPlayer);
-                trigger(team, arenaPlayer); // Assuming traps work multiple times.
+                team.getActiveTraps().remove(0).trigger(team, arenaPlayer);
+                //trigger(team, arenaPlayer); // Assuming traps work multiple times.
                 //break;
             }
         }
