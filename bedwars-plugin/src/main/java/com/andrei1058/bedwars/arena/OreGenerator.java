@@ -196,6 +196,7 @@ public class OreGenerator implements IGenerator {
             }
         }
         lastSpawn--;
+        lastSpawn--;
         for (IGenHolo e : armorStands.values()) {
             e.setTimerName(Language.getLang(e.getIso()).m(Messages.GENERATOR_HOLOGRAM_TIMER).replace("{seconds}", String.valueOf(lastSpawn)));
         }
