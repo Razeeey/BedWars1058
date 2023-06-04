@@ -21,7 +21,12 @@
 package com.andrei1058.bedwars.arena.tasks;
 
 import com.andrei1058.bedwars.api.arena.generator.IGenerator;
+import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.OreGenerator;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class OneTick implements Runnable {
     @Override
@@ -31,5 +36,13 @@ public class OneTick implements Runnable {
         for (IGenerator h : OreGenerator.getRotation()) {
             h.rotate();
         }
+
+        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
+
+        Arena.getArenas().forEach(arena -> {
+            arena.getPlayers().forEach(p->{onlinePlayers.remove(p);p.setPlayerListName(p.getName() + " " + p.getHealth());});
+        });
+
+        onlinePlayers.forEach(p->{p.setPlayerListName(p.getName());});
     }
 }
