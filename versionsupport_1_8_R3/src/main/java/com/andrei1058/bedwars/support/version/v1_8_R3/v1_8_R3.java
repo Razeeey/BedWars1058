@@ -402,6 +402,30 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
+    public void playFootprint(Player player, Location location) {
+        /*PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.FOOTSTEP, true, (float) location.getX(),
+                (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
+        for (Player inWorld : player.getWorld().getPlayers()) {
+            if (inWorld.equals(player)) continue;
+            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
+        }*/
+        /*PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
+                EnumParticle.FOOTSTEP,
+                false, // long distance
+                (float) location.getX(),
+                (float) location.getY(),
+                (float) location.getZ(),
+                0, 0, 0, // offset
+                0, // particle data
+                1 // number of particles
+        );
+
+        for (Player inWorld : player.getWorld().getPlayers()) {
+            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
+        }*/
+    }
+
+    @Override
     @SuppressWarnings("deprecation")
     public void setBlockTeamColor(org.bukkit.block.Block block, TeamColor teamColor) {
         block.setData(teamColor.itemByte());
@@ -537,7 +561,7 @@ public class v1_8_R3 extends VersionSupport {
     @Override
     public org.bukkit.Material materialNetheriteLeggings() {
         return Material.DIAMOND_LEGGINGS; //Netherite doesn't exist
-     }
+    }
 
     @Override
     public org.bukkit.Material materialElytra() {
@@ -747,13 +771,14 @@ public class v1_8_R3 extends VersionSupport {
             ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
         }
     }
+
     @Override
     public void clearArrowsFromPlayerBody(Player player) {
-        ((CraftLivingEntity)player).getHandle().getDataWatcher().watch(9, (byte)-1);
+        ((CraftLivingEntity) player).getHandle().getDataWatcher().watch(9, (byte) -1);
     }
 
     @Override
-    public void placeTowerBlocks(org.bukkit.block.Block b, IArena a, TeamColor color, int x, int y, int z){
+    public void placeTowerBlocks(org.bukkit.block.Block b, IArena a, TeamColor color, int x, int y, int z) {
         if (b.getLocation().getY() > a.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y))
             return;
 
@@ -763,14 +788,14 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
-    public void placeLadder(org.bukkit.block.Block b, int x, int y, int z, IArena a, int ladderdata){
+    public void placeLadder(org.bukkit.block.Block b, int x, int y, int z, IArena a, int ladderdata) {
         b.getRelative(x, y, z).setType(Material.LADDER);
-        b.getRelative(x, y, z).setData((byte)ladderdata);
+        b.getRelative(x, y, z).setData((byte) ladderdata);
         a.addPlacedBlock(b.getRelative(x, y, z));
     }
 
     @Override
-    public void playVillagerEffect(Player player, Location location){
+    public void playVillagerEffect(Player player, Location location) {
         PacketPlayOutWorldParticles pwp = new PacketPlayOutWorldParticles(EnumParticle.VILLAGER_HAPPY, true, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) 0, (float) 0, (float) 0, (float) 0, 1);
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(pwp);
     }
