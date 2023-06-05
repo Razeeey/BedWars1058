@@ -186,8 +186,14 @@ public class GamePlayingTask implements Runnable, PlayingTask {
             // spawn items
             for (IGenerator o : t.getGenerators()) {
                 o.spawn();
+                Bukkit.getScheduler().runTaskLater(BedWars.plugin, new Runnable(){
+                    @Override
+                    public void run() {
+                        o.spawn();
+                    }}, 10L);
             }
         }
+
 
         /* AFK SYSTEM FOR PLAYERS */
         int current = 0;

@@ -147,8 +147,8 @@ public class OreGenerator implements IGenerator {
             return;
         }
 
-        if (lastSpawn == 0) {
-            lastSpawn = delay/4;
+        if (lastSpawn == 0 || type==GeneratorType.IRON) {
+            lastSpawn = delay;
 
             if (spawnLimit != 0) {
                 int oreCount = 0;
@@ -162,7 +162,7 @@ public class OreGenerator implements IGenerator {
                         if (oreCount >= spawnLimit) return;
                     }
                 }
-                lastSpawn = delay/4;
+                lastSpawn = delay;
             }
             if (bwt == null) {
                 dropItem(location);
@@ -195,7 +195,6 @@ public class OreGenerator implements IGenerator {
                 return;
             }
         }
-        lastSpawn--;
         lastSpawn--;
         for (IGenHolo e : armorStands.values()) {
             e.setTimerName(Language.getLang(e.getIso()).m(Messages.GENERATOR_HOLOGRAM_TIMER).replace("{seconds}", String.valueOf(lastSpawn)));
@@ -425,6 +424,7 @@ public class OreGenerator implements IGenerator {
             case GOLD:
                 delay = getGeneratorsCfg().getInt(getGeneratorsCfg().getYml().get(arena.getGroup() + "." + ConfigPath.GENERATOR_GOLD_DELAY) == null ?
                         "Default." + ConfigPath.GENERATOR_GOLD_DELAY : arena.getGroup() + "." + ConfigPath.GENERATOR_GOLD_DELAY); // MADE 2x QUICKER
+                delay = 2;
                 ore = new ItemStack(Material.GOLD_INGOT);
                 amount = getGeneratorsCfg().getInt(getGeneratorsCfg().getYml().get(arena.getGroup() + "." + ConfigPath.GENERATOR_GOLD_AMOUNT) == null ?
                         "Default." + ConfigPath.GENERATOR_GOLD_AMOUNT : arena.getGroup() + "." + ConfigPath.GENERATOR_GOLD_AMOUNT);
@@ -432,8 +432,9 @@ public class OreGenerator implements IGenerator {
                         "Default." + ConfigPath.GENERATOR_GOLD_SPAWN_LIMIT : arena.getGroup() + "." + ConfigPath.GENERATOR_GOLD_SPAWN_LIMIT);
                 break;
             case IRON:
-                delay = getGeneratorsCfg().getInt(getGeneratorsCfg().getYml().get(arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_DELAY) == null ?
-                        "Default." + ConfigPath.GENERATOR_IRON_DELAY : arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_DELAY); // MADE 2x QUICKER
+                //delay = getGeneratorsCfg().getInt(getGeneratorsCfg().getYml().get(arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_DELAY) == null ?
+                //        "Default." + ConfigPath.GENERATOR_IRON_DELAY : arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_DELAY); // MADE 2x QUICKER
+                delay = 1;
                 amount = getGeneratorsCfg().getInt(getGeneratorsCfg().getYml().get(arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_AMOUNT) == null ?
                         "Default." + ConfigPath.GENERATOR_IRON_AMOUNT : arena.getGroup() + "." + ConfigPath.GENERATOR_IRON_AMOUNT);
                 ore = new ItemStack(Material.IRON_INGOT);
