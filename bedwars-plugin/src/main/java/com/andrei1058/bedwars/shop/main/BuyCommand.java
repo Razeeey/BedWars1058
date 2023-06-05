@@ -95,6 +95,11 @@ public class BuyCommand implements IBuyItem {
     }
 
     @Override
+    public void give(Player player, IArena arena, int slot) {
+        Bukkit.broadcastMessage("EMPTY GIVE W/ SLOT (BUYCOMMAND)");
+    }
+
+    @Override
     public String getUpgradeIdentifier() {
         return upgradeIdentifier;
     }

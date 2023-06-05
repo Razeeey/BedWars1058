@@ -266,6 +266,102 @@ public class BuyItem implements IBuyItem {
         player.updateInventory();
     }
 
+    public void give(Player player, IArena arena, int slot) {
+
+        ItemStack i = itemStack.clone();
+        BedWars.debug("Giving BuyItem: " + getUpgradeIdentifier() + " to: " + player.getName());
+
+        if (autoEquip && nms.isArmor(itemStack)) {
+            Material m = i.getType();
+
+            ItemMeta im = i.getItemMeta();
+            // idk dadea erori
+            if (arena.getTeam(player) == null) {
+                BedWars.debug("Could not give BuyItem to " + player.getName() + " - TEAM IS NULL");
+                return;
+            }
+            if (im != null) {
+                for (TeamEnchant e : arena.getTeam(player).getArmorsEnchantments()) {
+                    im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
+                }
+                if (permanent) nms.setUnbreakable(im);
+                i.setItemMeta(im);
+            }
+
+            if (m == Material.LEATHER_HELMET || m == Material.CHAINMAIL_HELMET || m == Material.IRON_HELMET || m == Material.DIAMOND_HELMET || m == nms.materialGoldenHelmet() || m == nms.materialNetheriteHelmet()) {
+                if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
+                player.getInventory().setHelmet(i);
+            } else if (m == Material.LEATHER_CHESTPLATE || m == Material.CHAINMAIL_CHESTPLATE || m == Material.IRON_CHESTPLATE || m == Material.DIAMOND_CHESTPLATE || m == nms.materialGoldenChestPlate() || m == nms.materialNetheriteChestPlate() || m == nms.materialElytra()) {
+                if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
+                player.getInventory().setChestplate(i);
+            } else if (m == Material.LEATHER_LEGGINGS || m == Material.CHAINMAIL_LEGGINGS || m == Material.IRON_LEGGINGS  || m == Material.DIAMOND_LEGGINGS || m == nms.materialGoldenLeggings()|| m == nms.materialNetheriteLeggings()) {
+                if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
+                player.getInventory().setLeggings(i);
+            } else {
+                if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
+                player.getInventory().setBoots(i);
+            }
+            player.updateInventory();
+            Sounds.playSound("shop-auto-equip", player);
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                // #274
+                if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                    for (Player p : arena.getPlayers()) {
+                        BedWars.nms.hideArmor(player, p);
+                    }
+                }
+                //
+            }, 20L);
+            return;
+        } else {
+
+            ItemMeta im = i.getItemMeta();
+            i = nms.colourItem(i, arena.getTeam(player));
+            if (im != null) {
+                if (permanent) nms.setUnbreakable(im);
+                if (unbreakable) nms.setUnbreakable(im);
+                if (i.getType() == Material.BOW) {
+                    if (permanent) nms.setUnbreakable(im);
+                    for (TeamEnchant e : arena.getTeam(player).getBowsEnchantments()) {
+                        im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
+                    }
+                } else if (nms.isSword(i) || nms.isAxe(i)) {
+                    for (TeamEnchant e : arena.getTeam(player).getSwordsEnchantments()) {
+                        im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
+                    }
+                }
+                i.setItemMeta(im);
+            }
+
+            if (permanent) {
+                i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
+            }
+        }
+
+        //Remove swords with lower damage
+        if (BedWars.nms.isSword(i)) {
+            for (ItemStack itm : player.getInventory().getContents()) {
+                if (itm == null) continue;
+                if (itm.getType() == Material.AIR) continue;
+                if (!BedWars.nms.isSword(itm)) continue;
+                if (itm == i) continue;
+                if (nms.isCustomBedWarsItem(itm) && nms.getCustomData(itm).equals("DEFAULT_ITEM")) {
+                    if (BedWars.nms.getDamage(itm) <= BedWars.nms.getDamage(i)) {
+                        player.getInventory().remove(itm);
+                    }
+                }
+            }
+        }
+        //
+        if (player.getInventory().getItem(slot) == null) {
+            player.getInventory().setItem(slot, i);
+        } else {
+            player.getInventory().addItem(i);
+        }
+        player.updateInventory();
+    }
+
 
     /**
      * Get upgrade identifier.

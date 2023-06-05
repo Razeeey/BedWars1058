@@ -36,6 +36,8 @@ public interface IBuyItem {
      */
     void give(Player player, IArena arena);
 
+    void give(Player player, IArena arena, int slot);
+
     /**
      * Get upgrade identifier.
      * Used to remove old tier items.

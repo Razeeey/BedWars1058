@@ -187,6 +187,15 @@ public class PumpkinContent extends CategoryContent {
         }
 
         @Override
+        public void give(Player player, IArena arena, int slot) {
+            if (player.getInventory().getItem(slot) == null) {
+                player.getInventory().setItem(slot, new ItemStack(Material.PUMPKIN, 12));
+            } else {
+                player.getInventory().addItem(new ItemStack(Material.PUMPKIN, 12));
+            }
+        }
+
+        @Override
         public String getUpgradeIdentifier() {
             return null;
         }

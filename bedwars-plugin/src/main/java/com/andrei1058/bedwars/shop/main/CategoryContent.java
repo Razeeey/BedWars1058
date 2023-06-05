@@ -208,12 +208,91 @@ public class CategoryContent implements ICategoryContent {
         shopCache.setCategoryWeight(father, weight);
     }
 
+    public void execute(Player player, ShopCache shopCache, int slot, int giveSlot) {
+
+        IContentTier ct;
+
+        //check weight
+        if (shopCache.getCategoryWeight(father) > weight) return;
+
+        if (shopCache.getContentTier(getIdentifier()) > contentTiers.size()) {
+            Bukkit.getLogger().severe("Wrong tier order at: " + getIdentifier());
+            return;
+        }
+
+        //check if can re-buy
+        if (shopCache.getContentTier(getIdentifier()) == contentTiers.size()) {
+            if (isPermanent() && shopCache.hasCachedItem(this)) {
+                player.sendMessage(getMsg(player, Messages.SHOP_ALREADY_BOUGHT));
+                Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
+                return;
+            }
+            //current tier
+            ct = contentTiers.get(shopCache.getContentTier(getIdentifier()) - 1);
+        } else {
+            if (!shopCache.hasCachedItem(this)) {
+                ct = contentTiers.get(0);
+            } else {
+                ct = contentTiers.get(shopCache.getContentTier(getIdentifier()));
+            }
+        }
+
+        //check money
+        int money = calculateMoney(player, ct.getCurrency());
+        if (money < ct.getPrice()) {
+            player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(ct))).
+                    replace("{amount}", String.valueOf(ct.getPrice() - money)));
+            Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
+            return;
+        }
+
+        ShopBuyEvent event;
+        //call shop buy event
+        Bukkit.getPluginManager().callEvent(event = new ShopBuyEvent(player, Arena.getArenaByPlayer(player), this));
+
+        if (event.isCancelled()){
+            return;
+        }
+
+        //take money
+        takeMoney(player, ct.getCurrency(), ct.getPrice());
+
+        //upgrade if possible
+        shopCache.upgradeCachedItem(this, slot);
+
+
+        //give items
+        giveItems(player, shopCache, Arena.getArenaByPlayer(player), giveSlot);
+
+        //play sound
+        Sounds.playSound(ConfigPath.SOUNDS_BOUGHT, player);
+
+        //send purchase msg
+        if (itemNamePath == null || Language.getPlayerLanguage(player).getYml().get(itemNamePath) == null) {
+            ItemStack displayItem = ct.getItemStack();
+            if (displayItem.getItemMeta() != null && displayItem.getItemMeta().hasDisplayName()) {
+                player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", displayItem.getItemMeta().getDisplayName()));
+            }
+        } else {
+            player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", ChatColor.stripColor(getMsg(player, itemNamePath))).replace("{color}", "").replace("{tier}", ""));
+        }
+
+
+        shopCache.setCategoryWeight(father, weight);
+    }
+
     /**
      * Add tier items to player inventory
      */
     public void giveItems(Player player, ShopCache shopCache, IArena arena) {
         for (IBuyItem bi : contentTiers.get(shopCache.getContentTier(getIdentifier()) - 1).getBuyItemsList()) {
             bi.give(player, arena);
+        }
+    }
+
+    public void giveItems(Player player, ShopCache shopCache, IArena arena, int slot) {
+        for (IBuyItem bi : contentTiers.get(shopCache.getContentTier(getIdentifier()) - 1).getBuyItemsList()) {
+            bi.give(player, arena, slot);
         }
     }
 

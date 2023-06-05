@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static com.andrei1058.bedwars.BedWars.nms;
@@ -70,6 +71,7 @@ public class InventoryListener implements Listener {
         if (ShopIndex.getIndexViewers().contains(p.getUniqueId())) {
             e.setCancelled(true);
 
+
             for (ShopCategory sc : ShopManager.getShop().getCategoryList()) {
                 if (e.getSlot() == sc.getSlot()) {
                     sc.open(p, ShopManager.getShop(), shopCache);
@@ -80,8 +82,29 @@ public class InventoryListener implements Listener {
                 if (element.getSlot() == e.getSlot()) {
                     if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         cache.setElement(element.getSlot(), null);
-                        //p.closeInventory(); // is this what needs to be removed?
                         ShopManager.getShop().open(p, cache, false);
+                        return;
+                    }
+                    if (e.getClick() == ClickType.NUMBER_KEY) {
+                        // Getting the index of the hotbar slot (0-8) the player wants to move the item to
+                        int hotbarSlot = e.getHotbarButton();
+
+                        // Assuming the shop item is stored in the clicked inventory slot
+                        ItemStack shopItem = e.getCurrentItem();
+
+                        // The player's inventory
+                        Inventory playerInventory = p.getInventory();
+
+                        // Add the shop item to the player's hotbar at the desired slot
+                        // You may want to add checks to make sure the slot is empty or handle cases where it is not
+                        //playerInventory.setItem(hotbarSlot, shopItem);
+
+                        // You might want to update the player's inventory afterwards
+                        //p.updateInventory();
+
+                        element.getCategoryContent().execute(p, shopCache, element.getSlot(), hotbarSlot);
+
+                        // Prevent the original item from being moved or duplicated
                         return;
                     }
                     element.getCategoryContent().execute(p, shopCache, element.getSlot());
