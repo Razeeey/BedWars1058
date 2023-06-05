@@ -33,6 +33,7 @@ import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.ArenaManager;
 import com.andrei1058.bedwars.arena.VoidChunkGenerator;
 import com.andrei1058.bedwars.arena.despawnables.TargetListener;
+import com.andrei1058.bedwars.arena.feature.InvisibleFootprintsFeature;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
 import com.andrei1058.bedwars.arena.tasks.OneTick;
@@ -306,7 +307,7 @@ public class BedWars extends JavaPlugin {
 
         // Register events
         registerEvents(new EnderPearlLanded(), new QuitAndTeleportListener(), new BreakPlace(), new DamageDeathMove(), new Inventory(), new Interact(), new RefreshGUI(), new HungerWeatherSpawn(), new CmdProcess(),
-                new FireballListener(), new EggBridge(), new SpectatorListeners(), new BaseListener(), new TargetListener(), new LangListener(), new Warnings(this), new ChatAFK(), new GameEndListener());
+                new FireballListener(), new EggBridge(), new SpectatorListeners(), new BaseListener(), new TargetListener(), new LangListener(), new Warnings(this), new ChatAFK(), new GameEndListener(), new ExplosionListener());
 
         if (config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_HEAL_POOL_ENABLE)) {
             registerEvents(new HealPoolListner());
@@ -602,6 +603,8 @@ public class BedWars extends JavaPlugin {
         }
 
         SpoilPlayerTNTFeature.init();
+
+        InvisibleFootprintsFeature.init();
     }
 
     private void registerDelayedCommands() {
