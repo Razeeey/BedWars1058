@@ -36,13 +36,5 @@ public class OneTick implements Runnable {
         for (IGenerator h : OreGenerator.getRotation()) {
             h.rotate();
         }
-
-        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-
-        Arena.getArenas().forEach(arena -> {
-            arena.getPlayers().forEach(p->{onlinePlayers.remove(p);p.setPlayerListName(p.getName() + " " + p.getHealth());});
-        });
-
-        onlinePlayers.forEach(p->{p.setPlayerListName(p.getName());});
     }
 }
