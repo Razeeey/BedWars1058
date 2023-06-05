@@ -357,7 +357,25 @@ public class BuyItem implements IBuyItem {
         if (player.getInventory().getItem(slot) == null) {
             player.getInventory().setItem(slot, i);
         } else {
-            player.getInventory().addItem(i);
+            if (player.getInventory().getItem(slot).getType() == i.getType()) {
+                // stack up, add excess
+                int existingAmount = player.getInventory().getItem(slot).getAmount();
+                int newAmount = i.getAmount();
+                if (existingAmount + newAmount <= i.getMaxStackSize()) {
+                    // If not, add the amounts together
+                    player.getInventory().getItem(slot).setAmount(existingAmount + newAmount);
+                } else {
+                    // If so, set the slot's amount to the max stack size
+                    player.getInventory().getItem(slot).setAmount(i.getMaxStackSize());
+
+                    // And add the overflow to the player's inventory
+                    i.setAmount(existingAmount + newAmount - i.getMaxStackSize());
+                    player.getInventory().addItem(i);
+                }
+            } else  {
+                player.getInventory().addItem(player.getInventory().getItem(slot));
+                player.getInventory().setItem(slot, i);
+            }
         }
         player.updateInventory();
     }
