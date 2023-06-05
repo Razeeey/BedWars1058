@@ -686,13 +686,25 @@ public class BwSidebar implements ISidebar {
             return;
         }
 
-        SidebarLine line = new SidebarLine() {
-            @NotNull
-            @Override
-            public String getLine() {
-                return String.valueOf((int) Math.ceil(player.getHealth()));
+        List<String> animation = Language.getList(player, Messages.FORMATTING_SCOREBOARD_HEALTH);
+        if (animation.isEmpty()) return;
+        SidebarLine line;
+        if (animation.size() > 1) {
+            String[] lines = new String[animation.size()];
+            for (int i = 0; i < animation.size(); i++) {
+                lines[i] = animation.get(i);
             }
-        };
+            line = new SidebarLineAnimated(lines);
+        } else {
+            final String text = animation.get(0);
+            line = new SidebarLine() {
+                @NotNull
+                @Override
+                public String getLine() {
+                    return text;
+                }
+            };
+        }
 
         if (config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_IN_TAB)) {
             handle.showPlayersHealth(line, true);
