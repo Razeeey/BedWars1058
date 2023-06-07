@@ -34,21 +34,23 @@ public class InvisibleFootprintsFeature {
                 if (arena.getStatus() != GameState.playing) return;
                 if (!arena.isPlayer(player)) return;
                 if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
-                Location location = player.getLocation();
-                location.setY(Math.floor(location.getY()));
-                if (!location.clone().subtract(0, 1, 0).getBlock().isEmpty()) {
-                    double x = Math.cos(Math.toRadians(player.getLocation().getYaw())) * 0.25d;
-                    double y = Math.sin(Math.toRadians(player.getLocation().getYaw())) * 0.25d;
 
-                    if (leftRight)
-                        location.add(x, 0.025D, y);
-                    else
-                        location.subtract(x, -0.025D, y);
+                Location location = player.getLocation();
+                location.setY(Math.floor(location.getY())+.1);
+
+                if (!location.clone().subtract(0, 1, 0).getBlock().isEmpty()) {
+                    // 90 degrees to left or right to set footprint to the side
+                    float angle = player.getLocation().getYaw() + (leftRight ? -90 : 90);
+                    double x = Math.cos(Math.toRadians(angle)) * 0.25d;
+                    double z = Math.sin(Math.toRadians(angle)) * 0.25d;
+
+                    location.add(x, 0.025D, z);
 
                     BedWars.nms.playFootprint(player, location);
                 }
             }
             leftRight = !leftRight;
         }
+
     }
 }

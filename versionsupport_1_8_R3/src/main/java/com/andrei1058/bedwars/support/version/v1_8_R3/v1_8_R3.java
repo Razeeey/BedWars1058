@@ -33,8 +33,7 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.server.VersionSupport;
 import com.andrei1058.bedwars.support.version.common.VersionCommon;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.Color;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
@@ -403,26 +402,30 @@ public class v1_8_R3 extends VersionSupport {
 
     @Override
     public void playFootprint(Player player, Location location) {
-        /*PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.FOOTSTEP, true, (float) location.getX(),
-                (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 2);
-        for (Player inWorld : player.getWorld().getPlayers()) {
-            if (inWorld.equals(player)) continue;
-            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
-        }*/
-        /*PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
-                EnumParticle.FOOTSTEP,
-                false, // long distance
-                (float) location.getX(),
-                (float) location.getY(),
-                (float) location.getZ(),
-                0, 0, 0, // offset
-                0, // particle data
-                1 // number of particles
-        );
+        try {
+            EnumParticle particleType = EnumParticle.CLOUD;
 
-        for (Player inWorld : player.getWorld().getPlayers()) {
-            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
-        }*/
+            PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+                    particleType,
+                    true, // true for distance scaling, false for velocity
+                    (float) location.getX(),
+                    (float) location.getY(),
+                    (float) location.getZ(),
+                    0f, 0f, 0f, // offset
+                    0f, // speed
+                    1, // count
+                    new int[0] // extra data
+            );
+
+
+            for (Player inWorld : player.getWorld().getPlayers()) {
+                ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(packet);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
     }
 
     @Override

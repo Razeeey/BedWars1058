@@ -201,6 +201,7 @@ public class v1_19_R2 extends VersionSupport {
     @Override
     public void playFootprint(Player player, Location location) {
         // need to add working method
+        Bukkit.broadcastMessage(">>> 1.19 PLAY FOOTSTEP RUN");
     }
 
     @Override
