@@ -72,7 +72,7 @@ public class BuyItem implements IBuyItem {
         if (yml.get(path + ".name") != null) {
             ItemMeta im = itemStack.getItemMeta();
             if (im != null) {
-                im.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r"+yml.getString(path + ".name")));
+                im.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + yml.getString(path + ".name")));
                 itemStack.setItemMeta(im);
             }
         }
@@ -204,7 +204,7 @@ public class BuyItem implements IBuyItem {
             } else if (m == Material.LEATHER_CHESTPLATE || m == Material.CHAINMAIL_CHESTPLATE || m == Material.IRON_CHESTPLATE || m == Material.DIAMOND_CHESTPLATE || m == nms.materialGoldenChestPlate() || m == nms.materialNetheriteChestPlate() || m == nms.materialElytra()) {
                 if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
                 player.getInventory().setChestplate(i);
-            } else if (m == Material.LEATHER_LEGGINGS || m == Material.CHAINMAIL_LEGGINGS || m == Material.IRON_LEGGINGS  || m == Material.DIAMOND_LEGGINGS || m == nms.materialGoldenLeggings()|| m == nms.materialNetheriteLeggings()) {
+            } else if (m == Material.LEATHER_LEGGINGS || m == Material.CHAINMAIL_LEGGINGS || m == Material.IRON_LEGGINGS || m == Material.DIAMOND_LEGGINGS || m == nms.materialGoldenLeggings() || m == nms.materialNetheriteLeggings()) {
                 if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
                 player.getInventory().setLeggings(i);
             } else {
@@ -296,7 +296,7 @@ public class BuyItem implements IBuyItem {
             } else if (m == Material.LEATHER_CHESTPLATE || m == Material.CHAINMAIL_CHESTPLATE || m == Material.IRON_CHESTPLATE || m == Material.DIAMOND_CHESTPLATE || m == nms.materialGoldenChestPlate() || m == nms.materialNetheriteChestPlate() || m == nms.materialElytra()) {
                 if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
                 player.getInventory().setChestplate(i);
-            } else if (m == Material.LEATHER_LEGGINGS || m == Material.CHAINMAIL_LEGGINGS || m == Material.IRON_LEGGINGS  || m == Material.DIAMOND_LEGGINGS || m == nms.materialGoldenLeggings()|| m == nms.materialNetheriteLeggings()) {
+            } else if (m == Material.LEATHER_LEGGINGS || m == Material.CHAINMAIL_LEGGINGS || m == Material.IRON_LEGGINGS || m == Material.DIAMOND_LEGGINGS || m == nms.materialGoldenLeggings() || m == nms.materialNetheriteLeggings()) {
                 if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
                 player.getInventory().setLeggings(i);
             } else {
@@ -362,37 +362,36 @@ public class BuyItem implements IBuyItem {
         if (currentItem == null) {
             player.getInventory().setItem(slot, newItem);
         } else {
-            if (currentItem.getType() == newItem.getType()) {
-                // Stack up, add excess
-                int existingAmount = currentItem.getAmount();
-                int newAmount = newItem.getAmount();
+            // Check if the currentItem is the same type as newItem and isn't a full stack.
+            if (currentItem.getType() == newItem.getType() && currentItem.getAmount() < currentItem.getMaxStackSize()) {
+                // If it's not a full stack, then add items from newItem until it is (if there's enough)
+                int totalItems = currentItem.getAmount() + newItem.getAmount();
+                int remainingItems = totalItems - currentItem.getMaxStackSize();
 
-                if (existingAmount + newAmount <= newItem.getMaxStackSize()) {
-                    // Add the amounts together
-                    currentItem.setAmount(existingAmount + newAmount);
-                } else {
-                    // Set the slot's amount to the max stack size and add the overflow to the player's inventory
-                    currentItem.setAmount(newItem.getMaxStackSize());
-                    newItem.setAmount(existingAmount + newAmount - newItem.getMaxStackSize());
-
-                    Map<Integer, ItemStack> couldNotAdd = player.getInventory().addItem(newItem);
-
-                    // Drop items if the inventory was full
-                    for (ItemStack overflow : couldNotAdd.values()) {
-                        player.getWorld().dropItemNaturally(player.getLocation(), overflow);
+                if (remainingItems > 0) {
+                    currentItem.setAmount(currentItem.getMaxStackSize());
+                    newItem.setAmount(remainingItems);
+                    // Add the remaining newItem to the inventory.
+                    // If inventory is full, then drop it on the ground.
+                    if (player.getInventory().addItem(newItem).size() > 0) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), newItem);
                     }
+                } else {
+                    currentItem.setAmount(totalItems);
                 }
             } else {
-                Map<Integer, ItemStack> couldNotAdd = player.getInventory().addItem(currentItem);
+                // If it's not the same type as newItem: Replace currentItem with newItem.
                 player.getInventory().setItem(slot, newItem);
 
-                // Drop items if the inventory was full
-                for (ItemStack overflow : couldNotAdd.values()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), overflow);
+                // Re-add currentItem to the inventory.
+                // If inventory is full, then drop it on the ground.
+                if (player.getInventory().addItem(currentItem).size() > 0) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), currentItem);
                 }
             }
         }
         player.updateInventory();
+
 
     }
 
