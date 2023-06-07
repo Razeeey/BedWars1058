@@ -36,7 +36,7 @@ public class InvisibleFootprintsFeature {
                 if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
 
                 Location location = player.getLocation();
-                location.setY(Math.floor(location.getY())+.1);
+                location.setY(Math.floor(location.getY()));
 
                 if (!location.clone().subtract(0, 1, 0).getBlock().isEmpty()) {
                     // 90 degrees to left or right to set footprint to the side

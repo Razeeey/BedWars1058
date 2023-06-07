@@ -402,7 +402,8 @@ public class v1_8_R3 extends VersionSupport {
 
     @Override
     public void playFootprint(Player player, Location location) {
-        try {
+        // CLOUD FOOTSTEP
+        /*try {
             EnumParticle particleType = EnumParticle.CLOUD;
 
             PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
@@ -423,6 +424,22 @@ public class v1_8_R3 extends VersionSupport {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }*/
+
+        // ACTUAL FOOTSTEP
+        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
+                EnumParticle.FOOTSTEP,
+                false, // long distance
+                (float) location.getX(),
+                (float) location.getY(),
+                (float) location.getZ(),
+                0, 0, 0, // offset
+                0, // particle data
+                1 // number of particles
+        );
+
+        for (Player inWorld : player.getWorld().getPlayers()) {
+            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
         }
 
 
