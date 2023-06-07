@@ -38,6 +38,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Map;
+
 import static com.andrei1058.bedwars.BedWars.nms;
 import static com.andrei1058.bedwars.BedWars.plugin;
 
@@ -354,30 +356,44 @@ public class BuyItem implements IBuyItem {
             }
         }
         //
-        if (player.getInventory().getItem(slot) == null) {
-            player.getInventory().setItem(slot, i);
-        } else {
-            if (player.getInventory().getItem(slot).getType() == i.getType()) {
-                // stack up, add excess
-                int existingAmount = player.getInventory().getItem(slot).getAmount();
-                int newAmount = i.getAmount();
-                if (existingAmount + newAmount <= i.getMaxStackSize()) {
-                    // If not, add the amounts together
-                    player.getInventory().getItem(slot).setAmount(existingAmount + newAmount);
-                } else {
-                    // If so, set the slot's amount to the max stack size
-                    player.getInventory().getItem(slot).setAmount(i.getMaxStackSize());
+        ItemStack currentItem = player.getInventory().getItem(slot);
+        ItemStack newItem = i.clone();
 
-                    // And add the overflow to the player's inventory
-                    i.setAmount(existingAmount + newAmount - i.getMaxStackSize());
-                    player.getInventory().addItem(i);
+        if (currentItem == null) {
+            player.getInventory().setItem(slot, newItem);
+        } else {
+            if (currentItem.getType() == newItem.getType()) {
+                // Stack up, add excess
+                int existingAmount = currentItem.getAmount();
+                int newAmount = newItem.getAmount();
+
+                if (existingAmount + newAmount <= newItem.getMaxStackSize()) {
+                    // Add the amounts together
+                    currentItem.setAmount(existingAmount + newAmount);
+                } else {
+                    // Set the slot's amount to the max stack size and add the overflow to the player's inventory
+                    currentItem.setAmount(newItem.getMaxStackSize());
+                    newItem.setAmount(existingAmount + newAmount - newItem.getMaxStackSize());
+
+                    Map<Integer, ItemStack> couldNotAdd = player.getInventory().addItem(newItem);
+
+                    // Drop items if the inventory was full
+                    for (ItemStack overflow : couldNotAdd.values()) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), overflow);
+                    }
                 }
-            } else  {
-                player.getInventory().addItem(player.getInventory().getItem(slot));
-                player.getInventory().setItem(slot, i);
+            } else {
+                Map<Integer, ItemStack> couldNotAdd = player.getInventory().addItem(currentItem);
+                player.getInventory().setItem(slot, newItem);
+
+                // Drop items if the inventory was full
+                for (ItemStack overflow : couldNotAdd.values()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), overflow);
+                }
             }
         }
         player.updateInventory();
+
     }
 
 

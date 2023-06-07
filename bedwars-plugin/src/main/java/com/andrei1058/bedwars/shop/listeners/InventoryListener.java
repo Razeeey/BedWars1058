@@ -86,25 +86,8 @@ public class InventoryListener implements Listener {
                         return;
                     }
                     if (e.getClick() == ClickType.NUMBER_KEY) {
-                        // Getting the index of the hotbar slot (0-8) the player wants to move the item to
                         int hotbarSlot = e.getHotbarButton();
-
-                        // Assuming the shop item is stored in the clicked inventory slot
-                        ItemStack shopItem = e.getCurrentItem();
-
-                        // The player's inventory
-                        Inventory playerInventory = p.getInventory();
-
-                        // Add the shop item to the player's hotbar at the desired slot
-                        // You may want to add checks to make sure the slot is empty or handle cases where it is not
-                        //playerInventory.setItem(hotbarSlot, shopItem);
-
-                        // You might want to update the player's inventory afterwards
-                        //p.updateInventory();
-
                         element.getCategoryContent().execute(p, shopCache, element.getSlot(), hotbarSlot);
-
-                        // Prevent the original item from being moved or duplicated
                         return;
                     }
                     element.getCategoryContent().execute(p, shopCache, element.getSlot());
@@ -128,6 +111,11 @@ public class InventoryListener implements Listener {
                         if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                             if (cache.hasCategoryContent(cc)) return;
                             new QuickBuyAdd(p, cc);
+                            return;
+                        }
+                        if (e.getClick() == ClickType.NUMBER_KEY) {
+                            int hotbarSlot = e.getHotbarButton();
+                            cc.execute(p, shopCache, cc.getSlot(), hotbarSlot);
                             return;
                         }
                         cc.execute(p, shopCache, cc.getSlot());
