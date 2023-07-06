@@ -47,6 +47,7 @@ public class GamePlayingTask implements Runnable, PlayingTask {
 
     private Arena arena;
     private BukkitTask task;
+    private BukkitTask task2;
     private int beds_destroy_countdown, dragon_spawn_countdown, game_end_countdown;
 
     public GamePlayingTask(Arena arena) {
@@ -54,7 +55,8 @@ public class GamePlayingTask implements Runnable, PlayingTask {
         this.beds_destroy_countdown = BedWars.config.getInt(ConfigPath.GENERAL_CONFIGURATION_BEDS_DESTROY_COUNTDOWN);
         this.dragon_spawn_countdown = BedWars.config.getInt(ConfigPath.GENERAL_CONFIGURATION_DRAGON_SPAWN_COUNTDOWN);
         this.game_end_countdown = BedWars.config.getInt(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN);
-        this.task = Bukkit.getScheduler().runTaskTimer(BedWars.plugin, this, 0, 20L);
+        this.task = Bukkit.getScheduler().runTaskTimer(BedWars.plugin, this::run, 0, 20L);
+        this.task2 = Bukkit.getScheduler().runTaskTimer(BedWars.plugin, this::run2, 0, 1L);
     }
 
     public Arena getArena() {
@@ -64,6 +66,9 @@ public class GamePlayingTask implements Runnable, PlayingTask {
     @Override
     public BukkitTask getBukkitTask() {
         return task;
+    }
+    public BukkitTask getBukkitTask2() {
+        return task2;
     }
 
     /**
@@ -166,33 +171,6 @@ public class GamePlayingTask implements Runnable, PlayingTask {
                 }
                 break;
         }
-        int distance = 0;
-        for (ITeam t : getArena().getTeams()) {
-            if (t.getSize() > 1) {
-                for (Player p : t.getMembers()) {
-                    for (Player p2 : t.getMembers()) {
-                        if (p2 == p) continue;
-                        if (distance == 0) {
-                            distance = (int) p.getLocation().distance(p2.getLocation());
-                        } else if ((int) p.getLocation().distance(p2.getLocation()) < distance) {
-                            distance = (int) p.getLocation().distance(p2.getLocation());
-                        }
-                    }
-                    nms.playAction(p, getMsg(p, Messages.FORMATTING_ACTION_BAR_TRACKING).replace("{team}", t.getColor().chat() + t.getDisplayName(Language.getPlayerLanguage(p)))
-                            .replace("{distance}", t.getColor().chat().toString() + distance).replace("&", "§"));
-                }
-            }
-
-            // spawn items
-            for (IGenerator o : t.getGenerators()) {
-                o.spawn();
-                Bukkit.getScheduler().runTaskLater(BedWars.plugin, new Runnable(){
-                    @Override
-                    public void run() {
-                        o.spawn();
-                    }}, 10L);
-            }
-        }
 
 
         /* AFK SYSTEM FOR PLAYERS */
@@ -254,14 +232,40 @@ public class GamePlayingTask implements Runnable, PlayingTask {
             }
         }
 
-        /* SPAWN ITEMS */
+
         for (IGenerator o : getArena().getOreGenerators()) {
             o.spawn();
         }
     }
 
+    public void run2() {
+        int distance = 0;
+        for (ITeam t : getArena().getTeams()) {
+            if (t.getSize() > 1) {
+                for (Player p : t.getMembers()) {
+                    for (Player p2 : t.getMembers()) {
+                        if (p2 == p) continue;
+                        if (distance == 0) {
+                            distance = (int) p.getLocation().distance(p2.getLocation());
+                        } else if ((int) p.getLocation().distance(p2.getLocation()) < distance) {
+                            distance = (int) p.getLocation().distance(p2.getLocation());
+                        }
+                    }
+                    nms.playAction(p, getMsg(p, Messages.FORMATTING_ACTION_BAR_TRACKING).replace("{team}", t.getColor().chat() + t.getDisplayName(Language.getPlayerLanguage(p)))
+                            .replace("{distance}", t.getColor().chat().toString() + distance).replace("&", "§"));
+                }
+            }
+
+            // spawn items
+            for (IGenerator o : t.getGenerators()) {
+                o.spawn();
+            }
+        }
+    }
+
     public void cancel() {
         task.cancel();
+        task2.cancel();
     }
 }
 

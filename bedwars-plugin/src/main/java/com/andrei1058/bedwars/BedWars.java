@@ -84,21 +84,30 @@ import com.andrei1058.bedwars.support.vipfeatures.VipFeatures;
 import com.andrei1058.bedwars.support.vipfeatures.VipListeners;
 import com.andrei1058.vipfeatures.api.IVipFeatures;
 import com.andrei1058.vipfeatures.api.MiniGameAlreadyRegistered;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -106,7 +115,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @SuppressWarnings("WeakerAccess")
-public class BedWars extends JavaPlugin {
+public class BedWars extends JavaPlugin implements Listener {
 
     private static ServerType serverType = ServerType.MULTIARENA;
     public static boolean debug = true, autoscale = false;
@@ -209,6 +218,7 @@ public class BedWars extends JavaPlugin {
         if (getServerType() != ServerType.BUNGEE) {
             signs = new SignsConfig(this, "signs", this.getDataFolder().getPath());
         }
+
     }
 
     @Override
@@ -277,6 +287,9 @@ public class BedWars extends JavaPlugin {
         if (config.getLobbyWorldName().isEmpty() && serverType != ServerType.BUNGEE) {
             plugin.getLogger().log(java.util.logging.Level.WARNING, "Lobby location is not set!");
         }
+
+
+        getServer().getPluginManager().registerEvents(this, this);
 
         /* Load lobby world if not main level
          * when the server finishes loading. */
@@ -605,6 +618,30 @@ public class BedWars extends JavaPlugin {
         SpoilPlayerTNTFeature.init();
 
         InvisibleFootprintsFeature.init();
+
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        protocolManager.addPacketListener(
+                new PacketAdapter(this, ListenerPriority.NORMAL,
+                        PacketType.Play.Server.WORLD_PARTICLES) {
+
+                    @Override
+                    public void onPacketSending(PacketEvent event) {
+                        if (event.getPacketType() == PacketType.Play.Server.WORLD_PARTICLES) {
+                            Player player = event.getPlayer();
+                            // Check if the player has invisibility effect
+                            if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                                // The packet's content might differ by version, you should check it
+                                String particleType = event.getPacket().getStrings().read(0);
+
+                                // Check if the particle is block dust
+                                if (particleType.equals("blockcrack") || particleType.equals("blockdust")) {
+                                    // Cancel the packet (this will prevent the player from seeing the particles)
+                                    event.setCancelled(true);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void registerDelayedCommands() {
@@ -831,5 +868,37 @@ public class BedWars extends JavaPlugin {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new VoidChunkGenerator();
+    }
+
+    @EventHandler
+    public void onTntExplosion(BlockExplodeEvent event) {
+        Block explodedBlock = event.getBlock();
+        Material material = explodedBlock.getType();
+
+        // Check if block that exploded is a TNT
+        if(material != Material.TNT) {
+            return;
+        }
+
+        // For all the blocks that were affected by explosion
+        for (Block block : event.blockList()) {
+            // Check in a radius for stained glass
+            int radius = 3;
+            for (int x = -radius; x <= radius; x++) {
+                for (int y = -radius; y <= radius; y++) {
+                    for (int z = -radius; z <= radius; z++) {
+                        Block nearbyBlock = block.getRelative(x, y, z);
+                        Material nearbyMaterial = nearbyBlock.getType();
+                        String materialName = nearbyMaterial.toString();
+
+                        // If stained glass is found within the radius, do not break the block
+                        if(materialName.contains("STAINED_GLASS")) {
+                            event.blockList().remove(block);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
