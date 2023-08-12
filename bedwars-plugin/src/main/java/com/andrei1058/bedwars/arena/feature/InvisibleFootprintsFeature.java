@@ -48,10 +48,11 @@ public class InvisibleFootprintsFeature {
                         location.add(x, 0.025D, z);
 
                         BedWars.nms.playFootprint(player, location);
+                        leftRight = !leftRight;
                     }
                 }
             }
-            leftRight = !leftRight;
+            //leftRight = !leftRight;
         }
 
     }

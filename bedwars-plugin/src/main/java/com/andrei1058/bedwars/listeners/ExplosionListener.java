@@ -76,6 +76,9 @@ public class ExplosionListener implements Listener {
                         Material nearbyMaterial = nearbyBlock.getType();
                         String materialName = nearbyMaterial.toString();
 
+                        if (nearbyMaterial == Material.ENDER_STONE)
+                            block.breakNaturally();
+
                         // If stained glass is found within the radius, add the block to the list of blocks to be removed
                         if(materialName.contains("STAINED_GLASS") || materialName.equalsIgnoreCase("obsidian")) {
                             blocksToRemove.add(block);
