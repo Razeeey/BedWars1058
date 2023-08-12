@@ -5,6 +5,7 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.LastHit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
@@ -58,6 +59,8 @@ public class FireballListener implements Listener {
         Vector vector = location.toVector();
 
         World world = location.getWorld();
+
+        world.playSound(location, Sound.EXPLODE, 1.0F, 1.0F);
 
         assert world != null;
         Collection<Entity> nearbyEntities = world

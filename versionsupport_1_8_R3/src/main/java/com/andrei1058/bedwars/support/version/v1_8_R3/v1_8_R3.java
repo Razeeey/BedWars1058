@@ -394,7 +394,7 @@ public class v1_8_R3 extends VersionSupport {
             field.setAccessible(true);
             field.set(Block.getByName("glass"), 300f);
             field.set(Block.getByName("stained_glass"), 300f);
-            field.set(Block.getByName("end_stone"), 69f);
+            field.set(Block.getByName("end_stone"), 1f);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

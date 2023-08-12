@@ -90,6 +90,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import net.minecraft.server.v1_8_R3.EnumParticle;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -111,6 +112,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -397,6 +399,8 @@ public class BedWars extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTaskTimer(this, new OneTick(), 120, 1);
         }
 
+        registerEvents(this);
+
         /* Register NMS entities */
         nms.registerEntities();
 
@@ -623,25 +627,34 @@ public class BedWars extends JavaPlugin implements Listener {
         protocolManager.addPacketListener(
                 new PacketAdapter(this, ListenerPriority.NORMAL,
                         PacketType.Play.Server.WORLD_PARTICLES) {
-
                     @Override
                     public void onPacketSending(PacketEvent event) {
                         if (event.getPacketType() == PacketType.Play.Server.WORLD_PARTICLES) {
-                            Player player = event.getPlayer();
-                            // Check if the player has invisibility effect
-                            if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                                // The packet's content might differ by version, you should check it
-                                String particleType = event.getPacket().getStrings().read(0);
+                            try {
+                                Object packet = event.getPacket().getHandle();
+                                Field field = packet.getClass().getDeclaredField("a");
+                                field.setAccessible(true);
+                                EnumParticle particleType = (EnumParticle) field.get(packet);
 
-                                // Check if the particle is block dust
-                                if (particleType.equals("blockcrack") || particleType.equals("blockdust")) {
-                                    // Cancel the packet (this will prevent the player from seeing the particles)
-                                    event.setCancelled(true);
+                                if (particleType == EnumParticle.FOOTSTEP) {
+                                    Player sourcePlayer = event.getPlayer();
+
+                                    if (sourcePlayer.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                                            if (onlinePlayer.getLocation().distance(sourcePlayer.getLocation()) < 10) {
+                                                event.setCancelled(true);
+                                            }
+                                        }
+                                    }
                                 }
+                            } catch (NoSuchFieldException | IllegalAccessException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
                 });
+
+
     }
 
     private void registerDelayedCommands() {
@@ -870,35 +883,4 @@ public class BedWars extends JavaPlugin implements Listener {
         return new VoidChunkGenerator();
     }
 
-    @EventHandler
-    public void onTntExplosion(BlockExplodeEvent event) {
-        Block explodedBlock = event.getBlock();
-        Material material = explodedBlock.getType();
-
-        // Check if block that exploded is a TNT
-        if(material != Material.TNT) {
-            return;
-        }
-
-        // For all the blocks that were affected by explosion
-        for (Block block : event.blockList()) {
-            // Check in a radius for stained glass
-            int radius = 3;
-            for (int x = -radius; x <= radius; x++) {
-                for (int y = -radius; y <= radius; y++) {
-                    for (int z = -radius; z <= radius; z++) {
-                        Block nearbyBlock = block.getRelative(x, y, z);
-                        Material nearbyMaterial = nearbyBlock.getType();
-                        String materialName = nearbyMaterial.toString();
-
-                        // If stained glass is found within the radius, do not break the block
-                        if(materialName.contains("STAINED_GLASS")) {
-                            event.blockList().remove(block);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

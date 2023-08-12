@@ -334,7 +334,7 @@ public class v1_16_R3 extends VersionSupport {
         try {
             Field field = net.minecraft.server.v1_16_R3.BlockBase.class.getDeclaredField("durability");
             field.setAccessible(true);
-            field.set(Blocks.END_STONE, 12f);
+            //field.set(Blocks.END_STONE, 12f);
             field.set(Blocks.GLASS, 300f);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

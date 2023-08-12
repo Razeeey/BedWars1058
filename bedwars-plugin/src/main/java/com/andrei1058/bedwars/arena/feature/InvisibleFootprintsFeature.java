@@ -40,13 +40,15 @@ public class InvisibleFootprintsFeature {
 
                 if (!location.clone().subtract(0, 1, 0).getBlock().isEmpty()) {
                     // 90 degrees to left or right to set footprint to the side
-                    float angle = player.getLocation().getYaw() + (leftRight ? -90 : 90);
-                    double x = Math.cos(Math.toRadians(angle)) * 0.25d;
-                    double z = Math.sin(Math.toRadians(angle)) * 0.25d;
+                    for (int i = 0; i < 2; i++) {
+                        float angle = player.getLocation().getYaw() + (leftRight ? -90 : 90);
+                        double x = Math.cos(Math.toRadians(angle)) * 0.25d;
+                        double z = Math.sin(Math.toRadians(angle)) * 0.25d;
 
-                    location.add(x, 0.025D, z);
+                        location.add(x, 0.025D, z);
 
-                    BedWars.nms.playFootprint(player, location);
+                        BedWars.nms.playFootprint(player, location);
+                    }
                 }
             }
             leftRight = !leftRight;
