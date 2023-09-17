@@ -15,7 +15,7 @@ public class InvisibleFootprintsFeature {
     private static boolean leftRight;
 
     private InvisibleFootprintsFeature() {
-        Bukkit.getScheduler().runTaskTimer(BedWars.plugin, new FootprintTask(), 5, 40L);
+        Bukkit.getScheduler().runTaskTimer(BedWars.plugin, new FootprintTask(), 5, 20L);
     }
 
     public static void init() {
@@ -36,23 +36,20 @@ public class InvisibleFootprintsFeature {
                 if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
 
                 Location location = player.getLocation();
-                location.setY(Math.floor(location.getY()));
+                location.setY(Math.floor(location.getY())+.1);
 
                 if (!location.clone().subtract(0, 1, 0).getBlock().isEmpty()) {
                     // 90 degrees to left or right to set footprint to the side
-                    for (int i = 0; i < 2; i++) {
-                        float angle = player.getLocation().getYaw() + (leftRight ? -90 : 90);
-                        double x = Math.cos(Math.toRadians(angle)) * 0.25d;
-                        double z = Math.sin(Math.toRadians(angle)) * 0.25d;
+                    float angle = player.getLocation().getYaw() + (leftRight ? -90 : 90);
+                    double x = Math.cos(Math.toRadians(angle)) * 0.25d;
+                    double z = Math.sin(Math.toRadians(angle)) * 0.25d;
 
-                        location.add(x, 0.025D, z);
+                    location.add(x, 0.025D, z);
 
-                        BedWars.nms.playFootprint(player, location);
-                        leftRight = !leftRight;
-                    }
+                    BedWars.nms.playFootprint(player, location);
                 }
             }
-            //leftRight = !leftRight;
+            leftRight = !leftRight;
         }
 
     }

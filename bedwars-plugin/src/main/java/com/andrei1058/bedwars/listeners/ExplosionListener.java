@@ -47,6 +47,7 @@ public class ExplosionListener implements Listener {
             Vector normalizedVector = playerVector.subtract(location.toVector()).normalize();
             Vector velocity = normalizedVector.multiply(1.5); // Edit 5 to adjust the knockback distance
             source.setVelocity(velocity);
+            source.damage(2);
         }
 
         world.playSound(location, Sound.EXPLODE, 1.0F, 1.0F);
@@ -76,11 +77,9 @@ public class ExplosionListener implements Listener {
                         Material nearbyMaterial = nearbyBlock.getType();
                         String materialName = nearbyMaterial.toString();
 
-                        if (nearbyMaterial == Material.ENDER_STONE)
-                            block.breakNaturally();
-
                         // If stained glass is found within the radius, add the block to the list of blocks to be removed
-                        if(materialName.contains("STAINED_GLASS") || materialName.equalsIgnoreCase("obsidian")) {
+                        //if(materialName.contains("STAINED_GLASS") || materialName.equalsIgnoreCase("obsidian")) {
+                        if(materialName.contains("STAINED_GLASS")) {
                             blocksToRemove.add(block);
                             break; // Breaking out of the inner loop since we already found stained glass
                         }
@@ -93,6 +92,8 @@ public class ExplosionListener implements Listener {
 
         // Remove the blocks from the explosion list
         event.blockList().removeAll(blocksToRemove);
+        event.setCancelled(true);
+        event.blockList().forEach(b->b.breakNaturally());
     }
 
 

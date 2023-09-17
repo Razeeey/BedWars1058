@@ -414,7 +414,7 @@ public class v1_8_R3 extends VersionSupport {
                     (float) location.getZ(),
                     0f, 0f, 0f, // offset
                     0f, // speed
-                    1, // count
+                    3, // count
                     new int[0] // extra data
             );
 
@@ -429,13 +429,14 @@ public class v1_8_R3 extends VersionSupport {
         // ACTUAL FOOTSTEP
         PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
                 EnumParticle.FOOTSTEP,
-                false, // long distance
+                true, // long distance
                 (float) location.getX(),
                 (float) location.getY(),
                 (float) location.getZ(),
                 0, 0, 0, // offset
                 0, // particle data
-                1 // number of particles
+                1, // number of particles
+                new int[0]
         );
 
         for (Player inWorld : player.getWorld().getPlayers()) {
