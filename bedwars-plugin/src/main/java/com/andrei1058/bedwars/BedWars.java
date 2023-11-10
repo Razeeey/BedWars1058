@@ -328,6 +328,8 @@ public class BedWars extends JavaPlugin implements Listener {
             registerEvents(new HealPoolListner());
         }
 
+        registerEvents(new HeightLimitListener());
+
         if (getServerType() == ServerType.BUNGEE) {
             if (autoscale) {
                 //registerEvents(new ArenaListeners());
