@@ -52,13 +52,26 @@ public class HeightLimitListener implements Listener {
             Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".PacketPlayOutChat");
             Class<?> packetClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".Packet");
 
-            Class<?> chatSerializerClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".ChatSerializer");
+            Class<?> chatComponentTextClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".ChatComponentText");
             Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".IChatBaseComponent");
 
-            Method m3 = chatSerializerClass.getDeclaredMethod("a", String.class);
-            Object cbc = iChatBaseComponentClass.cast(m3.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}"));
+            try {
+                Class<?> chatMessageTypeClass = Class.forName("net.minecraft.server." + BedWars.getServerVersion() + ".ChatMessageType");
+                Object[] chatMessageTypes = chatMessageTypeClass.getEnumConstants();
+                Object chatMessageType = null;
 
-            packet = packetPlayOutChatClass.getConstructor(iChatBaseComponentClass, byte.class).newInstance(cbc, (byte) 2);
+                for (Object obj : chatMessageTypes) {
+                    if (obj.toString().equals("GAME_INFO")) {
+                        chatMessageType = obj;
+                    }
+                }
+
+                Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
+                packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, chatMessageTypeClass}).newInstance(chatCompontentText, chatMessageType);
+            } catch (ClassNotFoundException cnfe) {
+                Object chatCompontentText = chatComponentTextClass.getConstructor(new Class<?>[]{String.class}).newInstance(message);
+                packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(chatCompontentText, (byte) 2);
+            }
 
             Method craftPlayerHandleMethod = craftPlayerClass.getDeclaredMethod("getHandle");
             Object craftPlayerHandle = craftPlayerHandleMethod.invoke(craftPlayer);
