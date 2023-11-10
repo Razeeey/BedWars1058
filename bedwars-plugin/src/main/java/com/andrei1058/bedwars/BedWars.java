@@ -36,6 +36,7 @@ import com.andrei1058.bedwars.arena.despawnables.TargetListener;
 import com.andrei1058.bedwars.arena.feature.InvisibleFootprintsFeature;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
+import com.andrei1058.bedwars.arena.tasks.HeightLimitTask;
 import com.andrei1058.bedwars.arena.tasks.OneTick;
 import com.andrei1058.bedwars.arena.tasks.Refresh;
 import com.andrei1058.bedwars.arena.upgrades.BaseListener;
@@ -322,8 +323,6 @@ public class BedWars extends JavaPlugin implements Listener {
         if (config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_HEAL_POOL_ENABLE)) {
             registerEvents(new HealPoolListner());
         }
-
-        registerEvents(new HeightLimitListener());
 
         if (getServerType() == ServerType.BUNGEE) {
             if (autoscale) {
