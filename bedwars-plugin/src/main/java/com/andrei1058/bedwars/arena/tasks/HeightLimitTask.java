@@ -25,7 +25,7 @@ public class HeightLimitTask implements Runnable {
             IArena arena = Arena.getArenaByPlayer(player);
 
             if (arena == null || !arena.isPlayer(player)) return;
-            if (arena.getStatus().equals(GameState.waiting)) return; // don't send if in waiting game status
+            if (arena.getStatus().equals(GameState.waiting) || arena.getStatus().equals(GameState.starting)) return; // don't send if in waiting game status
 
             int maxHeight = arena.getConfig().getInt("max-build-y");
             int distance = (int) (maxHeight - player.getLocation().getY());

@@ -395,7 +395,7 @@ public class BedWars extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTaskTimer(this, new OneTick(), 120, 1);
         }
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new HeightLimitTask(), 20L, 20L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new HeightLimitTask(), 5L, 5L); // server is fast
 
         registerEvents(this);
 
