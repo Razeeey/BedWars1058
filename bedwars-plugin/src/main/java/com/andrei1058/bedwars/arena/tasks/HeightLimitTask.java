@@ -4,6 +4,7 @@ import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.arena.Arena;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -18,27 +19,22 @@ import java.lang.reflect.Method;
 
 public class HeightLimitTask implements Runnable {
 
-    private final Player player;
-
-    public HeightLimitTask(Player player) {
-        this.player = player;
-    }
-
-
     @Override
     public void run() {
-        IArena arena = Arena.getArenaByPlayer(player);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            IArena arena = Arena.getArenaByPlayer(player);
 
-        if (!arena.isPlayer(player)) return;
-        if (arena.getStatus().equals(GameState.waiting)) return; // don't send if in waiting game status
+            if (arena == null || !arena.isPlayer(player)) return;
+            if (arena.getStatus().equals(GameState.waiting)) return; // don't send if in waiting game status
 
-        int maxHeight = arena.getConfig().getInt("max-build-y");
-        int distance = (int) (maxHeight - player.getLocation().getY());
+            int maxHeight = arena.getConfig().getInt("max-build-y");
+            int distance = (int) (maxHeight - player.getLocation().getY());
 
-        if (distance <= 0) {
-            sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&cYou are currently at the height limit! &e(" + (int) player.getLocation().getY() + " blocks)"));
-        } else if (distance <= 10) {
-            sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&aYou are &e" + distance + " &ablocks away from the height limit!"));
+            if (distance <= 0) {
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&cYou are currently at the height limit! &e(" + (int) player.getLocation().getY() + " blocks)"));
+            } else if (distance <= 10) {
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&aYou are &e" + distance + " &ablocks away from the height limit!"));
+            }
         }
     }
 
