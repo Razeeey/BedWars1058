@@ -32,6 +32,7 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyElement;
 import org.bukkit.Bukkit;
@@ -362,12 +363,20 @@ public class CategoryContent implements ICategoryContent {
                 if (s.contains("{quick_buy}")) {
                     if (hasQuick) {
                         if (ShopIndex.getIndexViewers().contains(player.getUniqueId())) {
-                            s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
+                            if (!ShopManager.isEditingQuickBuy(player)) {
+                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
+                            } else {
+                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
+                            }
                         } else {
                             continue;
                         }
                     } else {
-                        s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);
+                        if (!ShopManager.isEditingQuickBuy(player)) {
+                            s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD_EDITOR);
+                        } else {
+                            s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);
+                        }
                     }
                 }
                 s = s.replace("{tier}", tier).replace("{color}", color).replace("{cost}", cColor + String.valueOf(ct.getPrice()))

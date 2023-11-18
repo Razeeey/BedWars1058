@@ -41,6 +41,7 @@ import com.andrei1058.bedwars.arena.tasks.OneTick;
 import com.andrei1058.bedwars.arena.tasks.Refresh;
 import com.andrei1058.bedwars.arena.upgrades.BaseListener;
 import com.andrei1058.bedwars.arena.upgrades.HealPoolListner;
+import com.andrei1058.bedwars.commands.QuickBuyCommand;
 import com.andrei1058.bedwars.commands.bedwars.MainCommand;
 import com.andrei1058.bedwars.commands.leave.LeaveCommand;
 import com.andrei1058.bedwars.commands.party.PartyCommand;
@@ -666,6 +667,9 @@ public class BedWars extends JavaPlugin implements Listener {
         if (getServerType() != ServerType.BUNGEE && config.getBoolean(ConfigPath.GENERAL_ENABLE_PARTY_CMD)) {
             Bukkit.getLogger().info("Registering /party command..");
             nms.registerCommand("party", new PartyCommand("party"));
+        }
+        if (!nms.isBukkitCommandRegistered("quickbuy")) {
+            nms.registerCommand("quickbuy", new QuickBuyCommand("quickbuy"));
         }
     }
 

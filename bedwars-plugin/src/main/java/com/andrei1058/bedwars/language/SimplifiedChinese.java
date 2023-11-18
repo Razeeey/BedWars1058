@@ -388,6 +388,9 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SHOP_LORE_QUICK_ADD, "&bShift+点击 来添加快速购买");
         yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE, "&bShift+点击 来从快速购买中移除！");
 
+        yml.addDefault(Messages.SHOP_LORE_QUICK_ADD_EDITOR, "&bClick here to add to Quick Buy");
+        yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE_EDITOR, "&bClick here to remove from Quick Buy!");
+        yml.addDefault(Messages.SHOP_QUICK_EMPTY_LORE_EDITOR, Arrays.asList("&7This is a Quick Buy Slot!", "&bClick &7any item in", "&7the shop to add it here."));
 
         addCategoryMessages(yml, ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "&8方块", "&a方块", Collections.singletonList("&e点击查看！"));
 

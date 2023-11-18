@@ -31,15 +31,22 @@ import com.andrei1058.bedwars.shop.main.ShopIndex;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @SuppressWarnings("WeakerAccess")
 public class ShopManager extends ConfigManager {
 
     public static ShopIndex shop;
+
+    private static final List<UUID> quickBuyEditing = new ArrayList<>();
 
     public ShopManager() {
         super(BedWars.plugin, "shop", BedWars.plugin.getDataFolder().getPath());
@@ -526,6 +533,20 @@ public class ShopManager extends ConfigManager {
 
     public static ShopIndex getShop() {
         return shop;
+    }
+
+    public static List<UUID> getQuickBuyEditing() {
+        return quickBuyEditing;
+    }
+
+    /**
+     * Checks if player is editing quickbuy in lobby or not
+     *
+     * @param player The player to check
+     * @return player's quickbuy status
+     */
+    public static boolean isEditingQuickBuy(Player player) {
+        return quickBuyEditing.stream().anyMatch(u -> player.getUniqueId().equals(u));
     }
 
     /**

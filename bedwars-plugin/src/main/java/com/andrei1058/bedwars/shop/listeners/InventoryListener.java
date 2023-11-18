@@ -20,7 +20,6 @@
 
 package com.andrei1058.bedwars.shop.listeners;
 
-import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.ShopManager;
@@ -35,7 +34,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static com.andrei1058.bedwars.BedWars.nms;
@@ -51,9 +49,7 @@ public class InventoryListener implements Listener {
 
         Player p = (Player) e.getWhoClicked();
 
-        IArena a = Arena.getArenaByPlayer(p);
-        if (a == null) return;
-        if (a.isSpectator(p)) return;
+        if (!Arena.isInArena(p) && !ShopManager.isEditingQuickBuy(p)) return;
 
         ShopCache shopCache = ShopCache.getShopCache(p.getUniqueId());
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(p.getUniqueId());
