@@ -393,4 +393,8 @@ public class Messages {
     /* Arena waiting Items Messages */
     public static final String GENERAL_CONFIGURATION_WAITING_ITEMS_NAME = ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH+"-%path%-name";
     public static final String GENERAL_CONFIGURATION_WAITING_ITEMS_LORE = ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH+"-%path%-lore";
+
+    /* Arena Height Limit Messages*/
+    public static final String ARENA_HEIGHT_LIMIT = ConfigPath.ARENA_HEIGHT_LIMIT+"-current";
+    public static final String ARENA_HEIGHT_LIMIT_REACHED = ConfigPath.ARENA_HEIGHT_LIMIT+"-reached";
 }

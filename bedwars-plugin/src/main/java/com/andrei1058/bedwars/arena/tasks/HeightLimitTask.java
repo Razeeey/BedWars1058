@@ -3,6 +3,7 @@ package com.andrei1058.bedwars.arena.tasks;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
+import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,9 +32,9 @@ public class HeightLimitTask implements Runnable {
             int distance = (int) (maxHeight - player.getLocation().getY());
 
             if (distance <= 0) {
-                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&cYou are currently at the height limit! &e(" + (int) player.getLocation().getY() + " blocks)"));
-            } else if (distance <= 10) {
-                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', "&aYou are &e" + distance + " &ablocks away from the height limit!"));
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Messages.ARENA_HEIGHT_LIMIT_REACHED.replace("{height}", String.valueOf((int) player.getLocation().getY()))));
+            } else if (distance <= 15) {
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Messages.ARENA_HEIGHT_LIMIT.replace("{distance}", String.valueOf(distance))));
             }
         }
     }
