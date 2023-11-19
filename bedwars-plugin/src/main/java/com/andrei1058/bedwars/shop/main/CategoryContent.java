@@ -365,16 +365,10 @@ public class CategoryContent implements ICategoryContent {
             for (String s : Language.getList(player, itemLorePath)) {
                 if (s.contains("{quick_buy}")) {
                     if (hasQuick) {
-                        if (ShopIndex.getIndexViewers().contains(player.getUniqueId())) {
-                            if (ShopManager.isEditingQuickBuy(player)) {
-                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
-                            } else {
-                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
-                            }
+                        if (ShopManager.isEditingQuickBuy(player)) {
+                            s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
                         } else {
-                            if (ShopManager.isEditingQuickBuy(player)) {
-                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
-                            }
+                            s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
                         }
                     } else {
                         if (ShopManager.isEditingQuickBuy(player)) {
