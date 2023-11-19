@@ -22,10 +22,12 @@ package com.andrei1058.bedwars.shop.listeners;
 
 import com.andrei1058.bedwars.api.events.player.PlayerJoinArenaEvent;
 import com.andrei1058.bedwars.api.events.player.PlayerReJoinEvent;
+import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class QuickBuyListener implements Listener {
@@ -36,7 +38,11 @@ public class QuickBuyListener implements Listener {
         if (e.isSpectator()) return;
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(e.getPlayer().getUniqueId());
         if (cache != null) {
+            cache.pushChangesToDB();
             cache.destroy();
+
+            if (ShopManager.isEditingQuickBuy(e.getPlayer()))
+                ShopManager.getQuickBuyEditing().removeIf(u -> e.getPlayer().getUniqueId().equals(u));
         }
         new PlayerQuickBuyCache(e.getPlayer());
     }

@@ -355,6 +355,9 @@ public class CategoryContent implements ICategoryContent {
                 buyStatus = getMsg(player, Messages.SHOP_LORE_STATUS_CAN_BUY);
             }
 
+            if (ShopManager.isEditingQuickBuy(player)) {
+                buyStatus = "";
+            }
 
             im.setDisplayName(getMsg(player, itemNamePath).replace("{color}", color).replace("{tier}", tier));
 
@@ -363,16 +366,18 @@ public class CategoryContent implements ICategoryContent {
                 if (s.contains("{quick_buy}")) {
                     if (hasQuick) {
                         if (ShopIndex.getIndexViewers().contains(player.getUniqueId())) {
-                            if (!ShopManager.isEditingQuickBuy(player)) {
+                            if (ShopManager.isEditingQuickBuy(player)) {
                                 s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
                             } else {
                                 s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
                             }
                         } else {
-                            continue;
+                            if (ShopManager.isEditingQuickBuy(player)) {
+                                s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE_EDITOR);
+                            }
                         }
                     } else {
-                        if (!ShopManager.isEditingQuickBuy(player)) {
+                        if (ShopManager.isEditingQuickBuy(player)) {
                             s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD_EDITOR);
                         } else {
                             s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);

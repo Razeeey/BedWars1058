@@ -34,6 +34,7 @@ public class QuickBuyCommand extends BukkitCommand {
             return true;
         }
 
+        ShopManager.getQuickBuyEditing().add(p.getUniqueId());
         ShopManager.shop.open(p, PlayerQuickBuyCache.getQuickBuyCache(p.getUniqueId()),true);
         return false;
     }

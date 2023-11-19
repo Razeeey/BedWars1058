@@ -44,12 +44,9 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.isCancelled()) return;
         if (!(e.getWhoClicked() instanceof Player)) return;
 
         Player p = (Player) e.getWhoClicked();
-
-        if (!Arena.isInArena(p) && !ShopManager.isEditingQuickBuy(p)) return;
 
         ShopCache shopCache = ShopCache.getShopCache(p.getUniqueId());
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(p.getUniqueId());
@@ -75,19 +72,26 @@ public class InventoryListener implements Listener {
                 }
             }
             for (QuickBuyElement element : cache.getElements()) {
-                if (element.getSlot() == e.getSlot()) {
-                    if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                if (ShopManager.isEditingQuickBuy(p)) {
+                    if (element.getSlot() == e.getSlot()) {
                         cache.setElement(element.getSlot(), null);
                         ShopManager.getShop().open(p, cache, false);
+                    }
+                } else {
+                    if (element.getSlot() == e.getSlot()) {
+                        if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                            cache.setElement(element.getSlot(), null);
+                            ShopManager.getShop().open(p, cache, false);
+                            return;
+                        }
+                        if (e.getClick() == ClickType.NUMBER_KEY) {
+                            int hotbarSlot = e.getHotbarButton();
+                            element.getCategoryContent().execute(p, shopCache, element.getSlot(), hotbarSlot);
+                            return;
+                        }
+                        element.getCategoryContent().execute(p, shopCache, element.getSlot());
                         return;
                     }
-                    if (e.getClick() == ClickType.NUMBER_KEY) {
-                        int hotbarSlot = e.getHotbarButton();
-                        element.getCategoryContent().execute(p, shopCache, element.getSlot(), hotbarSlot);
-                        return;
-                    }
-                    element.getCategoryContent().execute(p, shopCache, element.getSlot());
-                    return;
                 }
             }
         } else if (ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
@@ -104,18 +108,27 @@ public class InventoryListener implements Listener {
                 if (sc.getSlot() != shopCache.getSelectedCategory()) continue;
                 for (CategoryContent cc : sc.getCategoryContentList()) {
                     if (cc.getSlot() == e.getSlot()) {
-                        if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                            if (cache.hasCategoryContent(cc)) return;
-                            new QuickBuyAdd(p, cc);
+                        if (ShopManager.isEditingQuickBuy(p)) {
+                            if (cc.hasQuick(p)) {
+                                cache.setElement(cc.getSlot(), null);
+                                ShopManager.getShop().open(p, cache, false);
+                            } else {
+                                new QuickBuyAdd(p, cc);
+                            }
+                        } else {
+                            if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                                if (cache.hasCategoryContent(cc)) return;
+                                new QuickBuyAdd(p, cc);
+                                return;
+                            }
+                            if (e.getClick() == ClickType.NUMBER_KEY) {
+                                int hotbarSlot = e.getHotbarButton();
+                                cc.execute(p, shopCache, cc.getSlot(), hotbarSlot);
+                                return;
+                            }
+                            cc.execute(p, shopCache, cc.getSlot());
                             return;
                         }
-                        if (e.getClick() == ClickType.NUMBER_KEY) {
-                            int hotbarSlot = e.getHotbarButton();
-                            cc.execute(p, shopCache, cc.getSlot(), hotbarSlot);
-                            return;
-                        }
-                        cc.execute(p, shopCache, cc.getSlot());
-                        return;
                     }
                 }
             }
@@ -143,6 +156,7 @@ public class InventoryListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         ShopCache sc = ShopCache.getShopCache(p.getUniqueId());
         if (sc == null) return;
+        if (ShopManager.isEditingQuickBuy(p)) return;
 
         //block moving from hotbar
         if (e.getAction() == HOTBAR_SWAP && e.getClick() == ClickType.NUMBER_KEY) {

@@ -25,6 +25,7 @@ import com.andrei1058.bedwars.api.events.shop.ShopOpenEvent;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -75,6 +76,11 @@ public class ShopIndex {
      * @param player        target player
      */
     public void open(Player player, PlayerQuickBuyCache quickBuyCache, boolean callEvent) {
+
+        if (ShopManager.isEditingQuickBuy(player)) {
+            if (quickBuyCache == null) quickBuyCache = new PlayerQuickBuyCache(player);
+            if (ShopCache.getShopCache(player.getUniqueId()) == null) new ShopCache(player.getUniqueId());
+        }
 
         if (quickBuyCache == null) return;
 
