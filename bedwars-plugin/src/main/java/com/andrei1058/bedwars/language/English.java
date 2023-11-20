@@ -122,6 +122,8 @@ public class English extends Language {
         yml.addDefault(Messages.COMMAND_FORCESTART_SUCCESS, "§c▪ §7Countdown shortened!");
         yml.addDefault(Messages.COMMAND_FORCESTART_NO_PERM, "{prefix}&7You can't forcestart the arena.\n§7Please consider donating for VIP features.");
         yml.addDefault(Messages.COMMAND_COOLDOWN, "&cYou can't do that yet! Wait {seconds} more seconds!");
+        yml.addDefault(Messages.ARENA_HEIGHT_LIMIT, "&aYou are &e{distance} &ablocks away from the height limit!");
+        yml.addDefault(Messages.ARENA_HEIGHT_LIMIT_REACHED, "&cYou are currently at the height limit! &e({height} blocks)");
         yml.addDefault(Messages.ARENA_JOIN_VIP_KICK, "{prefix}&cSorry, but you were kicked out because a donor joined the arena.\n&aPlease consider donating for more features. &7&o(click)");
         yml.addDefault(Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT, "{prefix}§cThere aren't enough players! Countdown stopped!");
         yml.addDefault(Messages.ARENA_RESTART_PLAYER_KICK, "{prefix}&eThe arena you were in is restarting.");
@@ -389,6 +391,9 @@ public class English extends Language {
         yml.addDefault(Messages.SHOP_LORE_QUICK_ADD, "&bSneak Click to add to Quick Buy");
         yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE, "&bSneak Click to remove from Quick Buy!");
 
+        yml.addDefault(Messages.SHOP_LORE_QUICK_ADD_EDITOR, "&bClick here to add to Quick Buy!");
+        yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE_EDITOR, "&bClick here to remove from Quick Buy!");
+        yml.addDefault(Messages.SHOP_QUICK_EMPTY_LORE_EDITOR, Arrays.asList("&7This is a Quick Buy Slot!", "&bClick &7any item in", "&7the shop to add it here."));
 
         addCategoryMessages(yml, ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "&8Blocks", "&aBlocks", Collections.singletonList("&eClick to view!"));
 

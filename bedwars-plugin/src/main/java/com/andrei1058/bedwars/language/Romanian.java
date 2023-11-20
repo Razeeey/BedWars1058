@@ -388,6 +388,9 @@ public class Romanian extends Language {
         yml.addDefault(Messages.SHOP_LORE_QUICK_ADD, "&bShift Click pentru Shop Rapid");
         yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE, "&bShift Click pentru a șterge din Shop Rapid!");
 
+        yml.addDefault(Messages.SHOP_LORE_QUICK_ADD_EDITOR, "&bClick here to add to Quick Buy");
+        yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE_EDITOR, "&bClick here to remove from Quick Buy!");
+        yml.addDefault(Messages.SHOP_QUICK_EMPTY_LORE_EDITOR, Arrays.asList("&7This is a Quick Buy Slot!", "&bClick &7any item in", "&7the shop to add it here."));
 
         addCategoryMessages(yml, ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "&8Blocuri", "&aBlocuri", Collections.singletonList("&eClick pentru a afișa!"));
         addContentMessages(yml, "wool", ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "{color}Lana", Arrays.asList("&7Preț: &f{cost} {currency}", "", "&7Great for bridging across", "&7islands. Turns into your team's",

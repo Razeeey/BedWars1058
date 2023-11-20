@@ -179,6 +179,7 @@ public class ConfigPath {
     public static final String ARENA_SPEC_LOC = "spectator-loc";
     public static final String ARENA_TEAM_KILL_DROPS_LOC = "kill-drops-loc";
     public static final String ARENA_Y_LEVEL_KILL = "y-kill-height";
+    public static final String ARENA_HEIGHT_LIMIT = "arena-height-limit";
 
     public static final String SOUNDS_COUNTDOWN_TICK = "game-countdown-others";
     public static final String SOUNDS_COUNTDOWN_TICK_X = "game-countdown-s";

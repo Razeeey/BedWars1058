@@ -390,6 +390,10 @@ public class Italian extends Language {
         yml.addDefault(Messages.SHOP_LORE_QUICK_ADD, "&bShift Click per aggiungere al Quick Buy");
         yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE, "&bShift Click per rimuovere dal Quick Buy!");
 
+        yml.addDefault(Messages.SHOP_LORE_QUICK_ADD_EDITOR, "&bClick here to add to Quick Buy");
+        yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE_EDITOR, "&bClick here to remove from Quick Buy!");
+        yml.addDefault(Messages.SHOP_QUICK_EMPTY_LORE_EDITOR, Arrays.asList("&7This is a Quick Buy Slot!", "&bClick &7any item in", "&7the shop to add it here."));
+
         addCategoryMessages(yml, ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "&8Blocchi", "&aBlocchi", Collections.singletonList("&eClicca per sfogliare!"));
         addContentMessages(yml, "wool", ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "{color}Lana", Arrays.asList("&7Costo: &f{cost} {currency}", "", "&7Buono per costruire ponti tra", "&7le isole. Prende il colore", "&7del tuo team.", "", "{quick_buy}", "{buy_status}"));
         addContentMessages(yml, "clay", ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "{color}Argilla indurita", Arrays.asList("&7Costo: {cost} {currency}", "", "&7Blocco base per proteggere  il letto.", "", "{quick_buy}", "{buy_status}"));

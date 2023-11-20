@@ -174,11 +174,6 @@ public class BwSidebar implements ISidebar {
         return lines;
     }
 
-    @Override
-    public void giveUpdateTabFormat(@NotNull Player player, boolean skipStateCheck) {
-        
-    }
-
     @Contract(pure = true)
     private @NotNull List<PlaceholderProvider> getPlaceholders() {
         List<PlaceholderProvider> providers = new ArrayList<>();
@@ -385,7 +380,6 @@ public class BwSidebar implements ISidebar {
      * Will handle invisibility potion as well.
      */
 
-    /*
     public void giveUpdateTabFormat(@NotNull Player player, boolean skipStateCheck) {
         // if sidebar was not created
         if (handle == null) {
@@ -523,6 +517,8 @@ public class BwSidebar implements ISidebar {
         teamTab.add(player);
     }
 
+    /* assuming we don't use this
+
     // Provide header and footer for current game state
     private void setHeaderFooter() {
         return;
@@ -574,10 +570,8 @@ public class BwSidebar implements ISidebar {
                 lang.m(footerPath)
         );
     }
-
+    */
     private @NotNull String getTabName(@NotNull ITeam team) {
-        return null;
-
         String tabName = TEAM_PREFIX + Base64.getEncoder().encodeToString((team.getName()).getBytes(StandardCharsets.UTF_8));
         if (tabName.length() > 16) {
             tabName = tabName.substring(0, 16);
@@ -587,7 +581,6 @@ public class BwSidebar implements ISidebar {
 
     @NotNull
     private SidebarLine getTabText(String path, Player targetPlayer, @Nullable HashMap<String, String> replacements) {
-        return null;
         List<String> strings = Language.getList(getPlayer(), path);
         if (strings.isEmpty()) {
             return new SidebarLine() {
@@ -629,7 +622,7 @@ public class BwSidebar implements ISidebar {
             lines[i] = strings.get(i);
         }
         return new SidebarLineAnimated(lines);
-    }*/
+    }
 
     /**
      * @return true if tab formatting is disabled for current sidebar/ arena stage

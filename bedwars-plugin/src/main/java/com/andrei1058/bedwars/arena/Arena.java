@@ -2225,6 +2225,14 @@ public class Arena implements IArena {
      * Check if is the party owner first.
      */
     public static boolean joinRandomArena(Player p) {
+        if (getArenaByPlayer(p) != null) {
+            IArena arena = getArenaByPlayer(p);
+            if (arena.isSpectator(p)) {
+                arena.removeSpectator(p, true);
+            } else {
+                arena.removePlayer(p, true);
+            }
+        }
         List<IArena> arenas = getSorted(getArenas());
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {

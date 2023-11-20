@@ -36,10 +36,12 @@ import com.andrei1058.bedwars.arena.despawnables.TargetListener;
 import com.andrei1058.bedwars.arena.feature.InvisibleFootprintsFeature;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
+import com.andrei1058.bedwars.arena.tasks.HeightLimitTask;
 import com.andrei1058.bedwars.arena.tasks.OneTick;
 import com.andrei1058.bedwars.arena.tasks.Refresh;
 import com.andrei1058.bedwars.arena.upgrades.BaseListener;
 import com.andrei1058.bedwars.arena.upgrades.HealPoolListner;
+import com.andrei1058.bedwars.commands.QuickBuyCommand;
 import com.andrei1058.bedwars.commands.bedwars.MainCommand;
 import com.andrei1058.bedwars.commands.leave.LeaveCommand;
 import com.andrei1058.bedwars.commands.party.PartyCommand;
@@ -92,19 +94,14 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -399,6 +396,8 @@ public class BedWars extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTaskTimer(this, new OneTick(), 120, 1);
         }
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new HeightLimitTask(), 5L, 5L); // server is fast
+
         registerEvents(this);
 
         /* Register NMS entities */
@@ -668,6 +667,9 @@ public class BedWars extends JavaPlugin implements Listener {
         if (getServerType() != ServerType.BUNGEE && config.getBoolean(ConfigPath.GENERAL_ENABLE_PARTY_CMD)) {
             Bukkit.getLogger().info("Registering /party command..");
             nms.registerCommand("party", new PartyCommand("party"));
+        }
+        if (!nms.isBukkitCommandRegistered("quickbuy")) {
+            nms.registerCommand("quickbuy", new QuickBuyCommand("quickbuy"));
         }
     }
 

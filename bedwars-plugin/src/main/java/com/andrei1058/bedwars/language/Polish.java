@@ -377,6 +377,9 @@ public class Polish extends Language{
         yml.addDefault(Messages.SHOP_LORE_QUICK_ADD, "&bKucnij &7by dodać do szybkiego kupowania");
         yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE, "&bKucnij &7by usunąć z szybkiego kupowania");
 
+        yml.addDefault(Messages.SHOP_LORE_QUICK_ADD_EDITOR, "&bClick here to add to Quick Buy");
+        yml.addDefault(Messages.SHOP_LORE_QUICK_REMOVE_EDITOR, "&bClick here to remove from Quick Buy!");
+        yml.addDefault(Messages.SHOP_QUICK_EMPTY_LORE_EDITOR, Arrays.asList("&7This is a Quick Buy Slot!", "&bClick &7any item in", "&7the shop to add it here."));
 
         addCategoryMessages(yml, ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "&8Bloki", "&aBloki", Collections.singletonList("&eKliknij aby przegladac!"));
         addContentMessages(yml, "wool", ConfigPath.SHOP_PATH_CATEGORY_BLOCKS, "{color}Welna", Arrays.asList("&7Koszt: &f{cost} {currency}", "", "&7Great for bridging across", "&7islands. Turns into your team's", "&7color.", "", "{quick_buy}", "{buy_status}"));

@@ -26,6 +26,8 @@ import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -38,9 +40,11 @@ public class QuickBuyTask extends BukkitRunnable {
     private UUID uuid;
 
 
-    public QuickBuyTask(UUID uuid){
+    public QuickBuyTask(UUID uuid) {
         this.uuid = uuid;
-        this.runTaskLaterAsynchronously(BedWars.plugin, 20*7);
+
+        //sorry i can't run this async for now until i have a better brain
+        this.runTaskLater(BedWars.plugin, 1L);
     }
 
     @Override
@@ -83,9 +87,17 @@ public class QuickBuyTask extends BukkitRunnable {
                     }
                 }
             } else {
+                Player player = Bukkit.getPlayer(uuid);
                 // slot, identifier
                 HashMap<Integer, String> items = BedWars.getRemoteDatabase().getQuickBuySlots(uuid, PlayerQuickBuyCache.quickSlots);
-                if (items == null) return;
+                if (items == null) {
+                    if (ShopManager.isEditingQuickBuy(player)) {
+                        player.closeInventory();
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cError while loading quick buy items! Please contact an administrator."));
+                    }
+
+                    return;
+                }
                 if (items.isEmpty()) return;
                 for (Map.Entry<Integer, String> entry : items.entrySet()) {
                     if (entry.getValue().isEmpty()) continue;
@@ -95,6 +107,9 @@ public class QuickBuyTask extends BukkitRunnable {
                         cache.addQuickElement(e);
                     }
                 }
+
+                if (ShopManager.isEditingQuickBuy(player))
+                    ShopManager.shop.open(player, PlayerQuickBuyCache.getQuickBuyCache(uuid), false);
             }
         }
     }
