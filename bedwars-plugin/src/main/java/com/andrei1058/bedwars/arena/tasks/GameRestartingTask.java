@@ -128,7 +128,10 @@ public class GameRestartingTask implements Runnable, RestartingTask {
                     Player p = (Player) e;
                     Misc.moveToLobbyOrKick(p, getArena(), true);
                     if (getArena().isSpectator(p)) getArena().removeSpectator(p, false);
-                    if (getArena().isPlayer(p)) getArena().removePlayer(p, false);
+                    if (getArena().isPlayer(p)) {
+                        p.sendMessage("this is ran task");
+                        getArena().removePlayer(p, false);
+                    }
                 }
             }
             for (IGenerator eg : getArena().getOreGenerators()) {

@@ -67,6 +67,7 @@ import static com.andrei1058.bedwars.api.language.Language.getMsg;
 public class Misc {
 
     public static void moveToLobbyOrKick(Player p, @Nullable IArena arena, boolean notAbandon) {
+        p.sendMessage("moved to lobby!!!");
         if (getServerType() != ServerType.BUNGEE) {
             if (!p.getWorld().getName().equalsIgnoreCase(config.getLobbyWorldName())) {
                 Location loc = config.getConfigLoc("lobbyLoc");
