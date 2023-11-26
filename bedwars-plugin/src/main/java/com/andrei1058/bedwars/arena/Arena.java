@@ -136,7 +136,7 @@ public class Arena implements IArena {
     /**
      * Players in respawn session
      */
-    private ConcurrentHashMap<Player, Integer> respawnSessions = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Player, Long> respawnSessions = new ConcurrentHashMap<>();
 
     /**
      * Invisibility for armor when you drink an invisibility potion
@@ -2171,7 +2171,7 @@ public class Arena implements IArena {
      * Get respawn sessions.
      */
     @Override
-    public ConcurrentHashMap<Player, Integer> getRespawnSessions() {
+    public ConcurrentHashMap<Player, Long> getRespawnSessions() {
         return respawnSessions;
     }
 
@@ -2521,7 +2521,7 @@ public class Arena implements IArena {
                 player.setAllowFlight(true);
                 player.setFlying(true);
 
-                respawnSessions.put(player, seconds);
+                respawnSessions.put(player, System.currentTimeMillis() + (seconds * 1000L));
                 Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> {
                     player.setAllowFlight(true);
                     player.setFlying(true);

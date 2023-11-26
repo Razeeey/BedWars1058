@@ -143,7 +143,7 @@ public interface IArena {
      * Player is the actual player in re-spawn screen.
      * Integer is the remaining time.
      */
-    ConcurrentHashMap<Player, Integer> getRespawnSessions();
+    ConcurrentHashMap<Player, Long> getRespawnSessions();
 
 
     /**
