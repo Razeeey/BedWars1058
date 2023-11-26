@@ -36,10 +36,12 @@ import com.andrei1058.bedwars.arena.despawnables.TargetListener;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
 import com.andrei1058.bedwars.arena.stats.DefaultStatsHandler;
+import com.andrei1058.bedwars.arena.tasks.HeightLimitTask;
 import com.andrei1058.bedwars.arena.tasks.OneTick;
 import com.andrei1058.bedwars.arena.tasks.Refresh;
 import com.andrei1058.bedwars.arena.upgrades.BaseListener;
 import com.andrei1058.bedwars.arena.upgrades.HealPoolListner;
+import com.andrei1058.bedwars.commands.QuickBuyCommand;
 import com.andrei1058.bedwars.commands.bedwars.MainCommand;
 import com.andrei1058.bedwars.commands.leave.LeaveCommand;
 import com.andrei1058.bedwars.commands.party.PartyCommand;
@@ -355,6 +357,8 @@ public class BedWars extends JavaPlugin {
             Bukkit.getScheduler().runTaskTimer(this, new OneTick(), 120, 1);
         }
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new HeightLimitTask(), 5L, 5L); // server is fast
+
         /* Register NMS entities */
         nms.registerEntities();
 
@@ -578,6 +582,10 @@ public class BedWars extends JavaPlugin {
         if (getServerType() != ServerType.BUNGEE && config.getBoolean(ConfigPath.GENERAL_ENABLE_PARTY_CMD)) {
             Bukkit.getLogger().info("Registering /party command..");
             nms.registerCommand("party", new PartyCommand("party"));
+        }
+
+        if (!nms.isBukkitCommandRegistered("quickbuy")) {
+            nms.registerCommand("quickbuy", new QuickBuyCommand("quickbuy"));
         }
     }
 

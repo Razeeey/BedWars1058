@@ -438,6 +438,11 @@ public class Messages {
     public static String SHOP_INSUFFICIENT_MONEY = "shop-insuff-money";
     public static String SHOP_ALREADY_BOUGHT = "shop-already-bought";
     public static final String SHOP_PATH = "shop-items-messages";
+
+    public static final String SHOP_LORE_QUICK_ADD_EDITOR  = "shop-lore-quick-add-editor";
+    public static final String SHOP_LORE_QUICK_REMOVE_EDITOR  = "shop-lore-quick-remove-editor";
+    public static final String SHOP_QUICK_EMPTY_LORE_EDITOR = SHOP_PATH + ".quick-buy-empty-item-lore-editor";
+
     public static final String SHOP_LORE_STATUS_CANT_AFFORD = "shop-lore-status-cant-afford";
     public static final String SHOP_LORE_STATUS_CAN_BUY = "shop-lore-status-can-buy";
     public static final String SHOP_LORE_STATUS_MAXED = "shop-lore-status-tier-maxed";
@@ -472,6 +477,10 @@ public class Messages {
     /* Arena waiting Items Messages */
     public static final String GENERAL_CONFIGURATION_WAITING_ITEMS_NAME = ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH + "-%path%-name";
     public static final String GENERAL_CONFIGURATION_WAITING_ITEMS_LORE = ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH + "-%path%-lore";
+
+    /* Arena Height Limit Messages*/
+    public static final String ARENA_HEIGHT_LIMIT = ConfigPath.ARENA_HEIGHT_LIMIT+"-current";
+    public static final String ARENA_HEIGHT_LIMIT_REACHED = ConfigPath.ARENA_HEIGHT_LIMIT+"-reached";
 
 
 
