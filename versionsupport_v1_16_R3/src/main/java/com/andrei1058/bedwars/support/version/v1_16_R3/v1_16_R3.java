@@ -184,6 +184,11 @@ public class v1_16_R3 extends VersionSupport {
     }
 
     @Override
+    public void playFootprint(Player player, Location location) {
+
+    }
+
+    @Override
     public boolean isAxe(org.bukkit.inventory.ItemStack itemStack) {
         if (CraftItemStack.asNMSCopy(itemStack).getItem() == null) return false;
         return CraftItemStack.asNMSCopy(itemStack).getItem() instanceof ItemAxe;

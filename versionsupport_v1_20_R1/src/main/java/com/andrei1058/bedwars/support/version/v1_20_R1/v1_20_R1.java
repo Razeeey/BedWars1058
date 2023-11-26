@@ -195,6 +195,11 @@ public class v1_20_R1 extends VersionSupport {
     }
 
     @Override
+    public void playFootprint(Player player, Location location) {
+
+    }
+
+    @Override
     public boolean isAxe(org.bukkit.inventory.ItemStack itemStack) {
         var i = getItem(itemStack);
         if (null == i) return false;

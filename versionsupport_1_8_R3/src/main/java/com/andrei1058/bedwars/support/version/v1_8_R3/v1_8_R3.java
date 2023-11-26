@@ -154,6 +154,26 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
+    public void playFootprint(Player player, Location location) {
+        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
+                EnumParticle.FOOTSTEP,
+                true, // long distance
+                (float) location.getX(),
+                (float) location.getY(),
+                (float) location.getZ(),
+                0, 0, 0, // offset
+                0, // particle data
+                1, // number of particles
+                new int[0]
+        );
+
+        for (Player inWorld : player.getWorld().getPlayers()) {
+            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
+        }
+
+    }
+
+    @Override
     public boolean isAxe(ItemStack itemStack) {
         if (CraftItemStack.asNMSCopy(itemStack).getItem() == null) return false;
         return CraftItemStack.asNMSCopy(itemStack).getItem() instanceof ItemAxe;
@@ -536,7 +556,7 @@ public class v1_8_R3 extends VersionSupport {
     @Override
     public org.bukkit.Material materialNetheriteLeggings() {
         return Material.DIAMOND_LEGGINGS; //Netherite doesn't exist
-     }
+    }
 
     @Override
     public org.bukkit.Material materialElytra() {

@@ -93,7 +93,7 @@ public class ExplosionListener implements Listener {
         // Remove the blocks from the explosion list
         event.blockList().removeAll(blocksToRemove);
         event.setCancelled(true);
-        event.blockList().forEach(b->b.breakNaturally());
+        event.blockList().forEach(Block::breakNaturally);
     }
 
 
