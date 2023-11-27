@@ -2229,16 +2229,24 @@ public class Arena implements IArena {
      * Check if is the party owner first.
      */
     public static boolean joinRandomArena(Player p) {
+        IArena previousArena; // prevent joining the same arena
+
         if (getArenaByPlayer(p) != null) {
-            IArena arena = getArenaByPlayer(p);
-            if (arena.isSpectator(p)) {
-                arena.removeSpectator(p, true);
+            previousArena = getArenaByPlayer(p);
+            if (previousArena.isSpectator(p)) {
+                previousArena.removeSpectator(p, true);
             } else {
-                arena.removePlayer(p, true);
+                previousArena.removePlayer(p, true);
             }
+        } else {
+            previousArena = null;
         }
 
         List<IArena> arenas = getSorted(getArenas());
+
+        if (previousArena != null) {
+            arenas.removeIf(a -> a.getArenaName().equals(previousArena.getArenaName()));
+        }
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {
             IArena arena = Arena.getArenaByPlayer(member);
