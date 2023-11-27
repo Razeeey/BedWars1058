@@ -80,12 +80,11 @@ public class BwSidebar implements ISidebar {
             handle.add(player);
         } else {
             handle.clearLines();
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                new ArrayList<>(handle.getPlaceholders()).forEach(p -> handle.removePlaceholder(p.getPlaceholder()));
-                placeholders.forEach(p -> handle.addPlaceholder(p));
-                handle.setTitle(title);
-                lines.forEach(l -> handle.addLine(l));
-            }, 2L);
+
+            new ArrayList<>(handle.getPlaceholders()).forEach(p -> handle.removePlaceholder(p.getPlaceholder()));
+            placeholders.forEach(p -> handle.addPlaceholder(p));
+            handle.setTitle(title);
+            lines.forEach(l -> handle.addLine(l));
         }
         handlePlayerList();
         //setHeaderFooter();

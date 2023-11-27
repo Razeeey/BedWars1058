@@ -1463,7 +1463,6 @@ public class Arena implements IArena {
      * Change game status starting tasks.
      */
     public void changeStatus(GameState status) {
-        // prevent called twice #https://github.com/andrei1058/BedWars1058/issues/774
         if (status == this.status) {
             return;
         }
@@ -2238,6 +2237,7 @@ public class Arena implements IArena {
                 arena.removePlayer(p, true);
             }
         }
+
         List<IArena> arenas = getSorted(getArenas());
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {
