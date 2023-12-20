@@ -421,9 +421,23 @@ public class Arena implements IArena {
         /* used for base enter/leave event */
         isOnABase.remove(p);
         //
+
+        IArena previousArena;
+
         if (getArenaByPlayer(p) != null) {
-            return false;
+            previousArena = getArenaByPlayer(p);
+
+            if (!previousArena.getArenaName().equals(arenaName)) {
+                if (previousArena.isSpectator(p)) {
+                    previousArena.removeSpectator(p, true);
+                } else {
+                    previousArena.removePlayer(p, true);
+                }
+            } else {
+                return false;
+            }
         }
+
         if (getParty().hasParty(p)) {
             if (!skipOwnerCheck) {
                 if (!getParty().isOwner(p)) {
@@ -2301,8 +2315,24 @@ public class Arena implements IArena {
      * Add a player to the most filled arena from a group.
      */
     public static boolean joinRandomFromGroup(Player p, @NotNull String group) {
+        IArena previousArena; // prevent joining the same arena
+
+        if (getArenaByPlayer(p) != null) {
+            previousArena = getArenaByPlayer(p);
+            if (previousArena.isSpectator(p)) {
+                previousArena.removeSpectator(p, true);
+            } else {
+                previousArena.removePlayer(p, true);
+            }
+        } else {
+            previousArena = null;
+        }
 
         List<IArena> arenas = getSorted(getArenas());
+
+        if (previousArena != null) {
+            arenas.removeIf(a -> a.getArenaName().equals(previousArena.getArenaName()));
+        }
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {
             IArena arena = Arena.getArenaByPlayer(member);
