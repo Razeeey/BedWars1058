@@ -65,8 +65,8 @@ public class HeightLimitTask implements Runnable {
             Object playerConnection = playerConnectionField.get(craftPlayerHandle);
             Method sendPacketMethod = playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass);
             sendPacketMethod.invoke(playerConnection, packet);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
+
         }
     }
 }
