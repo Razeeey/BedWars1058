@@ -3,6 +3,8 @@ package com.andrei1058.bedwars.arena.tasks;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
+import com.andrei1058.bedwars.api.configuration.ConfigPath;
+import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Bukkit;
@@ -27,14 +29,15 @@ public class HeightLimitTask implements Runnable {
 
             if (arena == null || !arena.isPlayer(player)) return;
             if (arena.getStatus().equals(GameState.waiting) || arena.getStatus().equals(GameState.starting)) return; // don't send if in waiting game status
+            if (arena.isReSpawning(player)) return;
 
-            int maxHeight = arena.getConfig().getInt("max-build-y");
+            int maxHeight = arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_Y);
             int distance = (int) (maxHeight - player.getLocation().getY());
 
             if (distance <= 0) {
-                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Messages.ARENA_HEIGHT_LIMIT_REACHED.replace("{height}", String.valueOf((int) player.getLocation().getY()))));
-            } else if (distance <= 15) {
-                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Messages.ARENA_HEIGHT_LIMIT.replace("{distance}", String.valueOf(distance))));
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Language.getMsg(player, Messages.ARENA_HEIGHT_LIMIT_REACHED).replace("{height}", String.valueOf((int) player.getLocation().getY()))));
+            } else if (distance <= arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_DISTANCE)) {
+                sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Language.getMsg(player, Messages.ARENA_HEIGHT_LIMIT).replace("{distance}", String.valueOf(distance))));
             }
         }
     }
@@ -62,8 +65,8 @@ public class HeightLimitTask implements Runnable {
             Object playerConnection = playerConnectionField.get(craftPlayerHandle);
             Method sendPacketMethod = playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass);
             sendPacketMethod.invoke(playerConnection, packet);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
+
         }
     }
 }

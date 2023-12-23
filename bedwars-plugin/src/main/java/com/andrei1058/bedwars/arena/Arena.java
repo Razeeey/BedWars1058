@@ -136,7 +136,7 @@ public class Arena implements IArena {
     /**
      * Players in respawn session
      */
-    private ConcurrentHashMap<Player, Integer> respawnSessions = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Player, Long> respawnSessions = new ConcurrentHashMap<>();
 
     /**
      * Invisibility for armor when you drink an invisibility potion
@@ -421,9 +421,23 @@ public class Arena implements IArena {
         /* used for base enter/leave event */
         isOnABase.remove(p);
         //
+
+        IArena previousArena;
+
         if (getArenaByPlayer(p) != null) {
-            return false;
+            previousArena = getArenaByPlayer(p);
+
+            if (!previousArena.getArenaName().equals(arenaName)) {
+                if (previousArena.isSpectator(p)) {
+                    previousArena.removeSpectator(p, true);
+                } else {
+                    previousArena.removePlayer(p, true);
+                }
+            } else {
+                return false;
+            }
         }
+
         if (getParty().hasParty(p)) {
             if (!skipOwnerCheck) {
                 if (!getParty().isOwner(p)) {
@@ -1463,6 +1477,10 @@ public class Arena implements IArena {
      * Change game status starting tasks.
      */
     public void changeStatus(GameState status) {
+        if (status == this.status) {
+            return;
+        }
+
         if (this.status != GameState.playing && status == GameState.playing) {
             startTime = Instant.now();
         }
@@ -2171,7 +2189,7 @@ public class Arena implements IArena {
      * Get respawn sessions.
      */
     @Override
-    public ConcurrentHashMap<Player, Integer> getRespawnSessions() {
+    public ConcurrentHashMap<Player, Long> getRespawnSessions() {
         return respawnSessions;
     }
 
@@ -2225,15 +2243,24 @@ public class Arena implements IArena {
      * Check if is the party owner first.
      */
     public static boolean joinRandomArena(Player p) {
+        IArena previousArena; // prevent joining the same arena
+
         if (getArenaByPlayer(p) != null) {
-            IArena arena = getArenaByPlayer(p);
-            if (arena.isSpectator(p)) {
-                arena.removeSpectator(p, true);
+            previousArena = getArenaByPlayer(p);
+            if (previousArena.isSpectator(p)) {
+                previousArena.removeSpectator(p, true);
             } else {
-                arena.removePlayer(p, true);
+                previousArena.removePlayer(p, true);
             }
+        } else {
+            previousArena = null;
         }
+
         List<IArena> arenas = getSorted(getArenas());
+
+        if (previousArena != null) {
+            arenas.removeIf(a -> a.getArenaName().equals(previousArena.getArenaName()));
+        }
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {
             IArena arena = Arena.getArenaByPlayer(member);
@@ -2288,8 +2315,24 @@ public class Arena implements IArena {
      * Add a player to the most filled arena from a group.
      */
     public static boolean joinRandomFromGroup(Player p, @NotNull String group) {
+        IArena previousArena; // prevent joining the same arena
+
+        if (getArenaByPlayer(p) != null) {
+            previousArena = getArenaByPlayer(p);
+            if (previousArena.isSpectator(p)) {
+                previousArena.removeSpectator(p, true);
+            } else {
+                previousArena.removePlayer(p, true);
+            }
+        } else {
+            previousArena = null;
+        }
 
         List<IArena> arenas = getSorted(getArenas());
+
+        if (previousArena != null) {
+            arenas.removeIf(a -> a.getArenaName().equals(previousArena.getArenaName()));
+        }
 
         int amount = getParty().hasParty(p) ? (int) getParty().getMembers(p).stream().filter(member -> {
             IArena arena = Arena.getArenaByPlayer(member);
@@ -2521,7 +2564,7 @@ public class Arena implements IArena {
                 player.setAllowFlight(true);
                 player.setFlying(true);
 
-                respawnSessions.put(player, seconds);
+                respawnSessions.put(player, System.currentTimeMillis() + (seconds * 1000L));
                 Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> {
                     player.setAllowFlight(true);
                     player.setFlying(true);

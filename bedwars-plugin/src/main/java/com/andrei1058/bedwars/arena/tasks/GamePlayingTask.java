@@ -188,33 +188,6 @@ public class GamePlayingTask implements Runnable, PlayingTask {
             }
         }
 
-        /* RESPAWN SESSION */
-        if (!getArena().getRespawnSessions().isEmpty()) {
-            for (Map.Entry<Player, Integer> e : getArena().getRespawnSessions().entrySet()) {
-                if (e.getValue() <= 0) {
-                    IArena a = Arena.getArenaByPlayer(e.getKey());
-                    if (a == null) {
-                        getArena().getRespawnSessions().remove(e.getKey());
-                        continue;
-                    }
-                    ITeam t = a.getTeam(e.getKey());
-                    if (t == null){
-                        a.addSpectator(e.getKey(), true, null);
-                    } else {
-                        t.respawnMember(e.getKey());
-                        e.getKey().setAllowFlight(false);
-                        e.getKey().setFlying(false);
-                    }
-                } else {
-                    nms.sendTitle(e.getKey(), getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_TITLE).replace("{time}",
-                            String.valueOf(e.getValue())), getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_SUBTITLE).replace("{time}",
-                            String.valueOf(e.getValue())), 0, 30, 10);
-                    e.getKey().sendMessage(getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_CHAT).replace("{time}", String.valueOf(e.getValue())));
-                    getArena().getRespawnSessions().replace(e.getKey(), e.getValue() - 1);
-                }
-            }
-        }
-
         /* INVISIBILITY FOR ARMOR */
         if (!getArena().getShowTime().isEmpty()) {
             for (Map.Entry<Player, Integer> e : getArena().getShowTime().entrySet()) {
@@ -259,6 +232,37 @@ public class GamePlayingTask implements Runnable, PlayingTask {
             // spawn items
             for (IGenerator o : t.getGenerators()) {
                 o.spawn();
+            }
+        }
+
+        /* RESPAWN SESSION */
+        if (!getArena().getRespawnSessions().isEmpty()) {
+            for (Map.Entry<Player, Long> e : getArena().getRespawnSessions().entrySet()) {
+                int secondsTimeUntilRespawn = (int) ((e.getValue() - System.currentTimeMillis()) / 1000);
+
+                if (secondsTimeUntilRespawn <= 0) {
+                    IArena a = Arena.getArenaByPlayer(e.getKey());
+                    if (a == null) {
+                        getArena().getRespawnSessions().remove(e.getKey());
+                        continue;
+                    }
+                    ITeam t = a.getTeam(e.getKey());
+                    if (t == null){
+                        a.addSpectator(e.getKey(), true, null);
+                    } else {
+                        t.respawnMember(e.getKey());
+                        e.getKey().setAllowFlight(false);
+                        e.getKey().setFlying(false);
+
+                        getArena().getRespawnSessions().remove(e.getKey());
+                    }
+                } else {
+                    nms.sendTitle(e.getKey(),
+                            getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_TITLE).replace("{time}", String.valueOf(secondsTimeUntilRespawn)),
+                            getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_SUBTITLE).replace("{time}",
+                                    String.valueOf(secondsTimeUntilRespawn)), 0, 30, 10);
+                    e.getKey().sendMessage(getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_CHAT).replace("{time}", String.valueOf(secondsTimeUntilRespawn)));
+                }
             }
         }
     }
