@@ -11,9 +11,12 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.api.sidebar.ISidebar;
 import com.andrei1058.bedwars.api.sidebar.ISidebarService;
+import com.andrei1058.bedwars.metrics.MetricsManager;
+import com.andrei1058.bedwars.sidebar.thread.*;
 import com.andrei1058.spigot.sidebar.SidebarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,10 +32,83 @@ public class SidebarService implements ISidebarService {
     private final SidebarManager sidebarHandler;
     private final HashMap<UUID, BwSidebar> sidebars = new HashMap<>();
 
-
-    public static boolean init() {
+    public static boolean init(JavaPlugin plugin) {
         if (null == instance) {
             instance = new SidebarService();
+
+            var log = Bukkit.getLogger();
+
+            int playerListRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_LIST_REFRESH);
+            if (playerListRefreshInterval < 1) {
+                Bukkit.getLogger().info("Scoreboard names list refresh is disabled. (It is set to " + playerListRefreshInterval + ").");
+            } else {
+                if (playerListRefreshInterval < 20) {
+                    log.warning("Scoreboard names list refresh interval is set to: " + playerListRefreshInterval);
+                    log.warning("It is not recommended to use a value under 20 ticks.");
+                    log.warning("If you expect performance issues please increase its timer.");
+                }
+                Bukkit.getScheduler().runTaskTimer(plugin, new RefreshPlayerListTask(), 1L, playerListRefreshInterval);
+            }
+            MetricsManager.appendPie("sb_list_refresh_interval", () -> String.valueOf(playerListRefreshInterval));
+
+            int placeholdersRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_PLACEHOLDERS_REFRESH_INTERVAL);
+            if (placeholdersRefreshInterval < 1) {
+                log.info("Scoreboard placeholders refresh is disabled. (It is set to " + placeholdersRefreshInterval + ").");
+            } else {
+                if (placeholdersRefreshInterval < 20) {
+                    log.warning("Scoreboard placeholders refresh interval is set to: " + placeholdersRefreshInterval);
+                    log.warning("It is not recommended to use a value under 20 ticks.");
+                    log.warning("If you expect performance issues please increase its timer.");
+                }
+                Bukkit.getScheduler().runTaskTimer(plugin, new RefreshPlaceholdersTask(), 1L, placeholdersRefreshInterval);
+            }
+            MetricsManager.appendPie("sb_placeholder_refresh_interval", () -> String.valueOf(placeholdersRefreshInterval));
+
+            int titleRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_TITLE_REFRESH_INTERVAL);
+            if (titleRefreshInterval < 1) {
+                log.info("Scoreboard title refresh is disabled. (It is set to " + titleRefreshInterval + ").");
+            } else {
+                if (titleRefreshInterval < 4) {
+                    log.warning("Scoreboard title refresh interval is set to: " + titleRefreshInterval);
+                    log.warning("If you expect performance issues please increase its timer.");
+                }
+                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new RefreshTitleTask(), 1L, titleRefreshInterval);
+            }
+            MetricsManager.appendPie("sb_title_refresh_interval", () -> String.valueOf(titleRefreshInterval));
+
+            int healthAnimationInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_REFRESH);
+            if (healthAnimationInterval < 1) {
+                log.info("Scoreboard health animation refresh is disabled. (It is set to " + healthAnimationInterval + ").");
+            } else {
+                if (healthAnimationInterval < 20) {
+                    log.warning("Scoreboard health animation refresh interval is set to: " + healthAnimationInterval);
+                    log.warning("It is not recommended to use a value under 20 ticks.");
+                    log.warning("If you expect performance issues please increase its timer.");
+                }
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new RefreshLifeTask(), 1L, healthAnimationInterval);
+            }
+            MetricsManager.appendPie("sb_health_refresh_interval", () -> String.valueOf(healthAnimationInterval));
+
+            int tabHeaderFooterRefreshInterval = config.getInt(ConfigPath.SB_CONFIG_TAB_HEADER_FOOTER_REFRESH_INTERVAL);
+            if (tabHeaderFooterRefreshInterval < 1 || !config.getBoolean(ConfigPath.SB_CONFIG_TAB_HEADER_FOOTER_ENABLE)) {
+                log.info("Scoreboard Tab header-footer refresh is disabled.");
+            } else {
+                if (tabHeaderFooterRefreshInterval < 20) {
+                    log.warning("Scoreboard tab header-footer refresh interval is set to: " + tabHeaderFooterRefreshInterval);
+                    log.warning("It is not recommended to use a value under 20 ticks.");
+                    log.warning("If you expect performance issues please increase its timer.");
+                }
+                Bukkit.getScheduler().runTaskTimer(plugin, new RefreshTabHeaderFooterTask(), 1L, tabHeaderFooterRefreshInterval);
+            }
+            MetricsManager.appendPie("sb_header_footer_refresh_interval", () -> String.valueOf(tabHeaderFooterRefreshInterval));
+
+            var lobbySidebar = config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_LOBBY_SIDEBAR) &&
+                    BedWars.getServerType() == ServerType.MULTIARENA;
+            MetricsManager.appendPie("sb_lobby_enable", () -> String.valueOf(lobbySidebar));
+            var gameSidebar = config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_GAME_SIDEBAR);
+            MetricsManager.appendPie("sb_game_enable", () -> String.valueOf(gameSidebar));
+
+            BedWars.registerEvents(new ScoreboardListener());
         }
         return instance.sidebarHandler != null;
     }
@@ -47,8 +123,9 @@ public class SidebarService implements ISidebarService {
         // check if we might need to remove the existing sidebar
         if (null != sidebar) {
             if (null == arena) {
-                // if sidebar is disabled in lobby on shared mode
-                if (!config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_LOBBY_SIDEBAR)) {
+                // if sidebar is disabled in lobby on shared or multi-arena mode
+                if (!config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_USE_LOBBY_SIDEBAR) ||
+                        BedWars.getServerType() == ServerType.SHARED) {
                     this.remove(sidebar);
                     return;
                 }
@@ -79,11 +156,39 @@ public class SidebarService implements ISidebarService {
             }
         } else {
             if (arena.getStatus() == GameState.waiting) {
-                lines = getScoreboard(player, "scoreboard." + arena.getGroup() + ".waiting", Messages.SCOREBOARD_DEFAULT_WAITING);
+                if (arena.isSpectator(player)) {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".waiting.spectator", Messages.SCOREBOARD_DEFAULT_WAITING_SPEC);
+                } else {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".waiting.player", Messages.SCOREBOARD_DEFAULT_WAITING);
+                }
             } else if (arena.getStatus() == GameState.starting) {
-                lines = getScoreboard(player, "scoreboard." + arena.getGroup() + ".starting", Messages.SCOREBOARD_DEFAULT_STARTING);
-            } else if (arena.getStatus() == GameState.playing || arena.getStatus() == GameState.restarting) {
-                lines = getScoreboard(player, "scoreboard." + arena.getGroup() + ".playing", Messages.SCOREBOARD_DEFAULT_PLAYING);
+                if (arena.isSpectator(player)) {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".starting.spectator", Messages.SCOREBOARD_DEFAULT_STARTING_SPEC);
+                } else {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".starting.player", Messages.SCOREBOARD_DEFAULT_STARTING);
+                }
+            } else if (arena.getStatus() == GameState.playing) {
+                if (arena.isSpectator(player)) {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".playing.spectator", Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC);
+                } else {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".playing.alive", Messages.SCOREBOARD_DEFAULT_PLAYING);
+                }
+            } else if (arena.getStatus() == GameState.restarting) {
+
+                ITeam holderTeam = arena.getTeam(player);
+                ITeam holderExTeam = null == holderTeam ? arena.getExTeam(player.getUniqueId()) : null;
+
+                if (null == holderTeam && null == holderExTeam) {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".restarting.spectator", Messages.SCOREBOARD_DEFAULT_RESTARTING_SPEC);
+                } else {
+                    if (null == holderTeam && holderExTeam.equals(arena.getWinner())) {
+                        lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".restarting.winner-eliminated", Messages.SCOREBOARD_DEFAULT_RESTARTING_WIN2);
+                    } else if (null == holderExTeam && holderTeam.equals(arena.getWinner())) {
+                        lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".restarting.winner-alive", Messages.SCOREBOARD_DEFAULT_RESTARTING_WIN1);
+                    } else {
+                        lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".restarting.loser", Messages.SCOREBOARD_DEFAULT_RESTARTING_LOSER);
+                    }
+                }
             }
         }
 
@@ -154,9 +259,10 @@ public class SidebarService implements ISidebarService {
 
     public void refreshPlaceholders(IArena arena) {
         this.sidebars.forEach((k, v) -> {
-            if (v.getArena().equals(arena)) {
-                v.getHandle().refreshPlaceholders();
-            }
+            if (v.getArena() != null)
+                if (v.getArena().equals(arena)) {
+                    v.getHandle().refreshPlaceholders();
+                }
         });
     }
 
@@ -164,11 +270,19 @@ public class SidebarService implements ISidebarService {
         this.sidebars.forEach((k, v) -> v.getHandle().playerTabRefreshAnimation());
     }
 
+    public void refreshTabHeaderFooter() {
+        this.sidebars.forEach((k, v) -> {
+            if (null != v && null != v.getHeaderFooter()) {
+                this.sidebarHandler.sendHeaderFooter(v.getPlayer(), v.getHeaderFooter());
+            }
+        });
+    }
+
     public void refreshHealth() {
         this.sidebars.forEach((k, v) -> {
             if (null != v.getArena()) {
                 v.getHandle().playerHealthRefreshAnimation();
-                for (Player player : v.getArena().getPlayers()){
+                for (Player player : v.getArena().getPlayers()) {
                     v.getHandle().setPlayerHealth(player, (int) Math.ceil(player.getHealth()));
                 }
             }
@@ -181,7 +295,7 @@ public class SidebarService implements ISidebarService {
     }
 
     public void refreshHealth(IArena arena, Player player, int health) {
-        this.sidebars.forEach((k,v) -> {
+        this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 v.getHandle().setPlayerHealth(player, health);
             }
@@ -189,15 +303,35 @@ public class SidebarService implements ISidebarService {
     }
 
     public void handleReJoin(IArena arena, Player player) {
-        this.sidebars.forEach((k,v) -> {
+        this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 v.giveUpdateTabFormat(player, false);
             }
         });
     }
 
+    public void handleJoin(IArena arena, Player player, @Nullable Boolean spectator) {
+        this.sidebars.forEach((k, v) -> {
+            if (null != v.getArena() && v.getArena().equals(arena)) {
+                if (!v.getPlayer().equals(player)) {
+                    v.giveUpdateTabFormat(player, false, spectator);
+                }
+            }
+        });
+    }
+
+    public void applyLobbyTab(Player player) {
+        this.sidebars.forEach((k, v) -> {
+            if (null == v.getArena()) {
+                if (!v.getPlayer().equals(player)) {
+                    v.giveUpdateTabFormat(player, false);
+                }
+            }
+        });
+    }
+
     public void handleInvisibility(ITeam team, Player player, boolean toggle) {
-        this.sidebars.forEach((k,v) -> {
+        this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(team.getArena())) {
                 v.handleInvisibilityPotion(player, toggle);
             }
