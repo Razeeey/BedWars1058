@@ -113,8 +113,6 @@ public abstract class VersionSupport {
      */
     public abstract boolean isSword(ItemStack itemStack);
 
-    public abstract void playFootprint(Player player, Location location);
-
     /**
      * Check if item-stack is axe
      */

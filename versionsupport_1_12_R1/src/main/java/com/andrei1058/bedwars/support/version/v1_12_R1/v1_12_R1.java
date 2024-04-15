@@ -85,9 +85,6 @@ public class v1_12_R1 extends VersionSupport {
     }
 
     @Override
-    public void playFootprint(Player player, Location location) {}
-
-    @Override
     public void registerCommand(String name, Command clasa) {
         ((CraftServer) getPlugin().getServer()).getCommandMap().register(name, clasa);
     }

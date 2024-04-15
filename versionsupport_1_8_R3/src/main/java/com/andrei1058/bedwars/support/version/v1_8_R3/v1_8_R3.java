@@ -406,52 +406,6 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
-    public void playFootprint(Player player, Location location) {
-        // CLOUD FOOTSTEP
-        /*try {
-            EnumParticle particleType = EnumParticle.CLOUD;
-
-            PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
-                    particleType,
-                    true, // true for distance scaling, false for velocity
-                    (float) location.getX(),
-                    (float) location.getY(),
-                    (float) location.getZ(),
-                    0f, 0f, 0f, // offset
-                    0f, // speed
-                    3, // count
-                    new int[0] // extra data
-            );
-
-
-            for (Player inWorld : player.getWorld().getPlayers()) {
-                ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(packet);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }*/
-
-        // ACTUAL FOOTSTEP
-        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(
-                EnumParticle.FOOTSTEP,
-                true, // long distance
-                (float) location.getX(),
-                (float) location.getY(),
-                (float) location.getZ(),
-                0, 0, 0, // offset
-                0, // particle data
-                1, // number of particles
-                new int[0]
-        );
-
-        for (Player inWorld : player.getWorld().getPlayers()) {
-            ((CraftPlayer) inWorld).getHandle().playerConnection.sendPacket(particlePacket);
-        }
-
-
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     public void setBlockTeamColor(org.bukkit.block.Block block, TeamColor teamColor) {
         block.setData(teamColor.itemByte());

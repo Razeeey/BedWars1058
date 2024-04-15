@@ -105,8 +105,6 @@ public class v1_17_R1 extends VersionSupport {
     }
 
     @Override
-    public void playFootprint(Player player, Location location) {}
-    @Override
     public void registerVersionListeners() {
         new VersionCommon(this);
     }
