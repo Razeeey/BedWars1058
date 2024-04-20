@@ -189,6 +189,15 @@ public class PAPISupport extends PlaceholderExpansion {
                     }
                 }
                 break;
+            case "player_respawning":
+                if (a != null && a.isPlayer(player) && a.getStatus() == GameState.playing) {
+                    if (a.isReSpawning(player)) {
+                        response = "true";
+                    } else {
+                        response = "false";
+                    }
+                }
+                break;
             case "player_level":
                 response = BedWars.getLevelSupport().getLevel(player);
                 break;
