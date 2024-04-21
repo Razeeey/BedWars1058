@@ -2569,6 +2569,7 @@ public class Arena implements IArena {
                 Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> {
                     player.setAllowFlight(true);
                     player.setFlying(true);
+                    player.setGameMode(GameMode.SPECTATOR);
 
                     nms.setCollide(player, this, false);
                     // #274

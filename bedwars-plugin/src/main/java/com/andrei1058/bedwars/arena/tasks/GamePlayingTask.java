@@ -32,6 +32,7 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.tasks.PlayingTask;
 import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -251,6 +252,7 @@ public class GamePlayingTask implements Runnable, PlayingTask {
                         a.addSpectator(e.getKey(), true, null);
                     } else {
                         t.respawnMember(e.getKey());
+                        e.getKey().setGameMode(GameMode.SURVIVAL);
                         e.getKey().setAllowFlight(false);
                         e.getKey().setFlying(false);
 
