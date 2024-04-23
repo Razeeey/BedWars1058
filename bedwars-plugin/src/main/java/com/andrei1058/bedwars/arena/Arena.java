@@ -2556,11 +2556,6 @@ public class Arena implements IArena {
             }
             player.getInventory().clear();
             if (seconds > 1) {
-                // hide to others
-                for (Player playing : arena.getPlayers()) {
-                    if (playing.equals(player)) continue;
-                    BedWars.nms.spigotHidePlayer(player, playing);
-                }
                 TeleportManager.teleportC(player, getReSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 player.setAllowFlight(true);
                 player.setFlying(true);

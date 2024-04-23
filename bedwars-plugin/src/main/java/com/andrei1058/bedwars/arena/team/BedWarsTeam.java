@@ -352,15 +352,6 @@ public class BedWarsTeam implements ITeam {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             getArena().getRespawnSessions().remove(p); //Fixes https://github.com/andrei1058/BedWars1058/issues/669
-
-            for (Player inGame : arena.getPlayers()) {
-                if (inGame.equals(p)) continue;
-                BedWars.nms.spigotShowPlayer(p, inGame);
-                BedWars.nms.spigotShowPlayer(inGame, p);
-            }
-            for (Player spectator : arena.getSpectators()) {
-                BedWars.nms.spigotShowPlayer(p, spectator);
-            }
         }, 8L);
 
         nms.sendTitle(p, getMsg(p, Messages.PLAYER_DIE_RESPAWNED_TITLE), "", 0, 20, 10);
