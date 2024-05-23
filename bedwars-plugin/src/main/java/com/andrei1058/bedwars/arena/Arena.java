@@ -691,7 +691,7 @@ public class Arena implements IArena {
                         BedWars.nms.spigotShowPlayer(p, on);
                         BedWars.nms.spigotShowPlayer(on, p);
                     } else if (getPlayers().contains(on)) {
-                        BedWars.nms.spigotHidePlayer(p, on);
+                        BedWars.nms.spigotShowPlayer(p, on);
                         BedWars.nms.spigotShowPlayer(on, p);
                     } else {
                         BedWars.nms.spigotHidePlayer(p, on);
