@@ -691,7 +691,7 @@ public class Arena implements IArena {
                         BedWars.nms.spigotShowPlayer(p, on);
                         BedWars.nms.spigotShowPlayer(on, p);
                     } else if (getPlayers().contains(on)) {
-                        BedWars.nms.spigotShowPlayer(p, on);
+                        BedWars.nms.spigotHidePlayer(p, on);
                         BedWars.nms.spigotShowPlayer(on, p);
                     } else {
                         BedWars.nms.spigotHidePlayer(p, on);
@@ -2002,6 +2002,11 @@ public class Arena implements IArena {
                         losers.add(p.getUniqueId());
                     }
                 }
+
+                getSpectators().forEach(spectator -> {
+                    players.forEach(other -> nms.spigotShowPlayer(spectator, other));
+                });
+
                 Bukkit.getPluginManager().callEvent(new GameEndEvent(this, winners, losers, winner, aliveWinners));
 
             }
