@@ -77,7 +77,7 @@ public class FireballListener implements Listener {
             Vector normalizedVector = vector.subtract(playerVector).normalize();
             Vector horizontalVector = normalizedVector.multiply(fireballHorizontal);
             double y = normalizedVector.getY();
-            if (y < 0) y += 1.5;
+//            if (y < 0) y += 1.5;
             if (y <= 0.5) {
                 y = fireballVertical * 1.5; // kb for not jumping
             } else {

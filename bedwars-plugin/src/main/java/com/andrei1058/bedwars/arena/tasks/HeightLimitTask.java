@@ -13,6 +13,10 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author kayalust
@@ -21,6 +25,8 @@ import java.lang.reflect.Method;
  */
 
 public class HeightLimitTask implements Runnable {
+
+    private final Set<UUID> notifiedPlayers = new HashSet<>();
 
     @Override
     public void run() {
@@ -35,10 +41,15 @@ public class HeightLimitTask implements Runnable {
             int distance = (int) (maxHeight - player.getLocation().getY());
 
             if (distance <= 0) {
+                if (!notifiedPlayers.add(player.getUniqueId()))
+                    return;
                 sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Language.getMsg(player, Messages.ARENA_HEIGHT_LIMIT_REACHED).replace("{height}", String.valueOf((int) player.getLocation().getY()))));
+                return;
             } else if (distance <= arena.getConfig().getInt(ConfigPath.ARENA_CONFIGURATION_MAX_BUILD_DISTANCE)) {
                 sendActionBar(player, ChatColor.translateAlternateColorCodes('&', Language.getMsg(player, Messages.ARENA_HEIGHT_LIMIT).replace("{distance}", String.valueOf(distance))));
             }
+
+            notifiedPlayers.remove(player.getUniqueId());
         }
     }
 
