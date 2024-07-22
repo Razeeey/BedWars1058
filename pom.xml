@@ -17,10 +17,10 @@
     <repositories>
         <!--Bungeecord Repo-->
         <!--Only include if using the Spigot API dependency-->
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>bungeecord-repo</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </repository>-->
 <!--        <repository>-->
 <!--            <id>gitlab-maven</id>-->
 <!--            <url>https://gitlab.com/api/v4/groups/4800570/-/packages/maven</url>-->
@@ -83,26 +83,14 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <modules>
         <module>bedwars-plugin</module>
         <module>bedwars-api</module>
-        <module>resetadapter_aswm</module>
+<!--        <module>resetadapter_aswm</module>-->
         <module>resetadapter_slime</module>
-        <module>resetadapter_slimepaper</module>
+<!--        <module>resetadapter_slimepaper</module>-->
         <module>versionsupport_1_8_R3</module>
         <module>versionsupport_1_12_R1</module>
         <module>versionsupport_common</module>

@@ -219,6 +219,8 @@ public class BedWars extends JavaPlugin implements Listener {
             return;
         }
 
+        new InvisibilityFootprintHidden().setup(this);
+
         nms.registerVersionListeners();
 
         if (!this.handleWorldAdapter()) {
@@ -529,6 +531,7 @@ public class BedWars extends JavaPlugin implements Listener {
 
         // Warn user if current server version support is deprecated
         this.performDeprecationCheck();
+
     }
 
     /**

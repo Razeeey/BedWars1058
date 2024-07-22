@@ -78,6 +78,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>io.papermc</groupId>
             <artifactId>paperlib</artifactId>
             <version>1.0.8</version>
@@ -338,17 +344,17 @@
         </dependency>
         <!--        End of Sidebar LIB-->
         <!-- Slime Paper -->
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>resetadapter-slimepaper</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Slime Paper -->
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>resetadapter-aswm</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.andrei1058.bedwars</groupId>-->
+<!--            <artifactId>resetadapter-slimepaper</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; Slime Paper &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.andrei1058.bedwars</groupId>-->
+<!--            <artifactId>resetadapter-aswm</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
         <!-- End of Slime Paper -->
 
         <dependency>
@@ -406,12 +412,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
