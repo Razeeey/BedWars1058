@@ -6,11 +6,17 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.particle.type.ParticleTypes;
+import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerParticle;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
@@ -40,6 +46,17 @@ public class InvisibilityFootprintHidden implements PacketListener {
                     if ((value & 1 << 3) != 0) {
                         entityData.setValue((byte) (value & ~(1 << 3)));
                         event.markForReEncode(true);
+                    }
+                }
+            }
+        } else if (event.getPacketType() == PacketType.Play.Server.PARTICLE) {
+            WrapperPlayServerParticle wrapper = new WrapperPlayServerParticle(event);
+            if (wrapper.getParticle().getType() == ParticleTypes.BLOCK) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Vector3d wrapperPosition = wrapper.getPosition();
+                    Location location = new Location(player.getWorld(), wrapperPosition.x, wrapperPosition.y, wrapperPosition.z);
+                    if (player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getLocation().distance(location) < 3) {
+                        event.setCancelled(true);
                     }
                 }
             }
