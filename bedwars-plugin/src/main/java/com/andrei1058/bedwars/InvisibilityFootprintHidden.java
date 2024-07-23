@@ -24,8 +24,6 @@ public class InvisibilityFootprintHidden implements PacketListener {
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
-        System.out.println(event.getPacketType());
-
         if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA) {
             WrapperPlayServerEntityMetadata wrapper = new WrapperPlayServerEntityMetadata(event);
             Entity entity = SpigotConversionUtil.getEntityById(null, wrapper.getEntityId());
