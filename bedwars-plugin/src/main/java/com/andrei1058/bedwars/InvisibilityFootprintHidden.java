@@ -24,42 +24,51 @@ public class InvisibilityFootprintHidden implements PacketListener {
 
     public void setup(JavaPlugin plugin) {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(plugin));
+        PacketEvents.getAPI().getSettings().reEncodeByDefault(false);
         PacketEvents.getAPI().load();
         PacketEvents.getAPI().getEventManager().registerListener(this, PacketListenerPriority.HIGH);
     }
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA) {
-            WrapperPlayServerEntityMetadata wrapper = new WrapperPlayServerEntityMetadata(event);
-            Entity entity = SpigotConversionUtil.getEntityById(null, wrapper.getEntityId());
-            if (!(entity instanceof LivingEntity))
-                return;
-            LivingEntity livingEntity = (LivingEntity) entity;
-            if (!livingEntity.hasPotionEffect(PotionEffectType.INVISIBILITY))
-                return;
-            // Only remove the footprint if the entity is invisible
+        try {
+            if (event.getPacketType() == PacketType.Play.Server.ENTITY_METADATA) {
+                WrapperPlayServerEntityMetadata wrapper = new WrapperPlayServerEntityMetadata(event);
+                Entity entity = SpigotConversionUtil.getEntityById(null, wrapper.getEntityId());
+                if (!(entity instanceof LivingEntity) || entity == event.getPlayer())
+                    return;
+                LivingEntity livingEntity = (LivingEntity) entity;
+                if (!livingEntity.hasPotionEffect(PotionEffectType.INVISIBILITY))
+                    return;
+                // Only remove the footprint if the entity is invisible
 
-            for (EntityData entityData : wrapper.getEntityMetadata()) {
-                if (entityData.getIndex() == 0) {
-                    byte value = (byte) entityData.getValue();
-                    if ((value & 1 << 3) != 0) {
-                        entityData.setValue((byte) (value & ~(1 << 3)));
-                        event.markForReEncode(true);
+                for (EntityData entityData : wrapper.getEntityMetadata()) {
+                    if (entityData.getIndex() == 0) {
+                        byte value = (byte) entityData.getValue();
+                        if ((value & 1 << 3) != 0) {
+                            entityData.setValue((byte) (value & ~(1 << 3)));
+                            event.markForReEncode(true);
+                        }
                     }
                 }
-            }
-        } else if (event.getPacketType() == PacketType.Play.Server.PARTICLE) {
-            WrapperPlayServerParticle wrapper = new WrapperPlayServerParticle(event);
-            if (wrapper.getParticle().getType() == ParticleTypes.BLOCK) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Vector3d wrapperPosition = wrapper.getPosition();
-                    Location location = new Location(player.getWorld(), wrapperPosition.x, wrapperPosition.y, wrapperPosition.z);
-                    if (player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getLocation().distance(location) < 3) {
-                        event.setCancelled(true);
+            } else if (event.getPacketType() == PacketType.Play.Server.PARTICLE) {
+                try {
+                    WrapperPlayServerParticle wrapper = new WrapperPlayServerParticle(event);
+                    if (wrapper.getParticle().getType() == ParticleTypes.BLOCK) {
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            Vector3d wrapperPosition = wrapper.getPosition();
+                            Location location = new org.bukkit.Location(player.getWorld(), wrapperPosition.x, wrapperPosition.y, wrapperPosition.z);
+                            if (player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getLocation().distance(location) < 1.5) {
+                                event.setCancelled(true);
+                            }
+                        }
                     }
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
                 }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
