@@ -59,7 +59,9 @@ public class InvisibilityFootprintHidden implements PacketListener {
                             Vector3d wrapperPosition = wrapper.getPosition();
                             Location location = new org.bukkit.Location(player.getWorld(), wrapperPosition.x, wrapperPosition.y, wrapperPosition.z);
                             if (player.hasPotionEffect(PotionEffectType.INVISIBILITY) && player.getLocation().distance(location) < 1.5) {
-                                event.setCancelled(true);
+                                wrapper.setParticleCount((int) Math.floor(wrapper.getParticleCount() * 0.2));
+                                event.markForReEncode(true);
+                                break;
                             }
                         }
                     }
