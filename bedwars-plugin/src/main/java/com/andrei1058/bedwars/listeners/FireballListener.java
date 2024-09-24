@@ -74,7 +74,7 @@ public class FireballListener implements Listener {
                 continue;
 
             Vector playerVector = player.getLocation().toVector();
-            Vector normalizedVector = vector.subtract(playerVector).normalize();
+            Vector normalizedVector = vector.clone().subtract(playerVector).normalize();
             Vector horizontalVector = normalizedVector.clone().multiply(fireballHorizontal);
             double y = normalizedVector.getY();
             System.out.println(y);
