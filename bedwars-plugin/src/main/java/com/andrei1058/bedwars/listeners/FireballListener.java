@@ -78,6 +78,7 @@ public class FireballListener implements Listener {
             Vector horizontalVector = normalizedVector.clone().multiply(fireballHorizontal);
             double y = normalizedVector.getY();
             System.out.println(y);
+            if (y < -0.7) y = Math.abs(y);
             if (y < 0) y += 1.5;
             if (y <= 0.5) {
                 y = fireballVertical * 1.5; // kb for not jumping
