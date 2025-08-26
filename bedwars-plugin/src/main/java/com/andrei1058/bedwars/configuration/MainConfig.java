@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.util.*;
 
 import static com.andrei1058.bedwars.BedWars.getForCurrentVersion;
@@ -56,6 +57,7 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_CHAT_FORMATTING, yml.get("formatChat", true));
         yml.addDefault("debug", false);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_MARK_LEAVE_AS_ABANDON, false);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_STATS_FUNCTION_TOGGLE, true);
         // parties category
         yml.addDefault(ConfigPath.GENERAL_ENABLE_PARTY_CMD, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ALLOW_PARTIES, true);
@@ -136,6 +138,8 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_DISABLE_FURNACE, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_DISABLE_BREWING_STAND, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_DISABLE_ANVIL, true);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_BLOCKED_GROUPS, new ArrayList<String>());
+
 
         /* Multi-Arena Lobby Command Items */
         saveLobbyCommandItem("stats", "bw stats", false, getForCurrentVersion("SKULL_ITEM", "SKULL_ITEM", "PLAYER_HEAD"), 3, 0);
@@ -382,6 +386,13 @@ public class MainConfig extends ConfigManager {
         String[] data = d.replace("[", "").replace("]", "").split(",");
         return data[data.length - 1];
     }
+
+    //Getter for disabling stats command
+
+    public boolean isStatsCommandEnabled() {
+        return getYml().getBoolean("commands.stats-enabled", true);
+    }
+
 
     /**
      * Add Multi Arena Lobby Command Item To

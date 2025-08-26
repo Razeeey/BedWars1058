@@ -30,6 +30,7 @@ public class Permissions {
     public static final String PERMISSION_SHOUT_COMMAND = BedWars.mainCmd+".shout";
 
     public static final String PERMISSION_SETUP_ARENA = BedWars.mainCmd+".setup";
+    public static final String PERMISSION_LIST_ARENA = BedWars.mainCmd+".list";
     public static final String PERMISSION_ARENA_GROUP = BedWars.mainCmd+".groups";
     public static final String PERMISSION_BUILD = BedWars.mainCmd+".build";
     public static final String PERMISSION_CLONE = BedWars.mainCmd+".clone";
@@ -42,6 +43,7 @@ public class Permissions {
     public static final String PERMISSION_LEVEL = BedWars.mainCmd+".level";
     public static final String PERMISSION_CHAT_COLOR = BedWars.mainCmd+".chatcolor";
     public static final String PERMISSION_VIP = BedWars.mainCmd+".vip";
+    public static final String PERMISSION_BYPASS_BLOCKED_GROUPS = BedWars.mainCmd+".join.blockedgroups";
 
     /**
      * Check if player has one of the given permissions.

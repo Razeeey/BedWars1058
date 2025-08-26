@@ -59,10 +59,13 @@ public class Messages {
     public static String COMMAND_JOIN_DENIED_NOT_PARTY_LEADER = "cmd-join-not-leader";
     public static String COMMAND_JOIN_PLAYER_JOIN_MSG = "cmd-join-success";
     public static String COMMAND_JOIN_SPECTATOR_MSG = "cmd-join-spectate";
+    public static String COMMAND_JOIN_GROUP_BLOCKED = "cmd-join-group-blocked";
     public static String COMMAND_JOIN_SPECTATOR_DENIED_MSG = "cmd-join-spectate-denied";
     public static String COMMAND_TP_PLAYER_NOT_FOUND = "cmd-tp-player-not-found";
     public static String COMMAND_TP_NOT_IN_ARENA = "cmd-tp-not-in-arena";
     public static String COMMAND_TP_NOT_STARTED = "cmd-tp-not-started";
+    public static String COMMAND_SPECTATE_SUCCESS = "cmd-spectate-success";
+    public static String COMMAND_SPECTATE_USAGE   = "cmd-spectate-usage";
     public static String COMMAND_TP_USAGE = "cmd-tp-usage";
     public static String REJOIN_NO_ARENA = "cmd-rejoin-no-arena";
     public static String REJOIN_DENIED = "cmd-rejoin-denied";
@@ -100,6 +103,7 @@ public class Messages {
     public static String COMMAND_FORCESTART_SUCCESS = "cmd-start";
     public static String COMMAND_FORCESTART_NO_PERM = "cmd-start-no-perm";
     public static String COMMAND_COOLDOWN = "cmd-cooldown";
+    public static String COMMAND_STATS_DISABLED = "cmd-stats-disabled";
 
     /** Arena join/ leave related */
     public static String ARENA_JOIN_VIP_KICK = "arena-kicked-by-vip";

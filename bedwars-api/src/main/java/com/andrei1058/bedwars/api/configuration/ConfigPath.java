@@ -95,6 +95,7 @@ public class ConfigPath {
     public static final String GENERAL_CONFIGURATION_STATS_ITEMS_MATERIAL = GENERAL_CONFIGURATION_STATS_PATH + ".%path%.material";
     public static final String GENERAL_CONFIGURATION_STATS_ITEMS_DATA = GENERAL_CONFIGURATION_STATS_PATH + ".%path%.data";
     public static final String GENERAL_CONFIGURATION_STATS_ITEMS_SLOT = GENERAL_CONFIGURATION_STATS_PATH + ".%path%.slot";
+    public static final String GENERAL_CONFIGURATION_STATS_FUNCTION_TOGGLE = "commands.stats-enabled";
 
     public static final String GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH = "pre-game-items";
     // Replace %path% with name
@@ -117,6 +118,7 @@ public class ConfigPath {
     public static final String GENERAL_CONFIGURATION_HUNGER_INGAME = "allow-hunger-depletion.ingame";
 
     public static final String GENERAL_CONFIGURATION_ARENA_GROUPS = "arenaGroups";
+    public static final String GENERAL_CONFIGURATION_BLOCKED_GROUPS = "bw-join-blocked-groups";
     public static final String GENERAL_CONFIGURATION_REJOIN_TIME = "rejoin-time";
     public static final String GENERAL_CONFIGURATION_RE_SPAWN_INVULNERABILITY = "re-spawn-invulnerability";
 

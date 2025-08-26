@@ -41,6 +41,10 @@ import com.andrei1058.bedwars.arena.team.BedWarsTeam;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.listeners.dropshandler.PlayerDrops;
 import com.andrei1058.bedwars.support.paper.PaperSupport;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -481,7 +485,7 @@ public class DamageDeathMove implements Listener {
             }
 
             // send respawn packet
-            Bukkit.getScheduler().runTaskLater(plugin, () -> victim.spigot().respawn(), 3L);
+            Bukkit.getScheduler().runTask(plugin, () -> instantRespawn(victim));
             a.addPlayerDeath(victim);
 
             // reset last damager
@@ -723,6 +727,17 @@ public class DamageDeathMove implements Listener {
             nms.spawnSilverfish(loc, t, shop.getYml().getDouble(ConfigPath.SHOP_SPECIAL_SILVERFISH_SPEED), shop.getYml().getDouble(ConfigPath.SHOP_SPECIAL_SILVERFISH_HEALTH),
                     shop.getInt(ConfigPath.SHOP_SPECIAL_SILVERFISH_DESPAWN),
                     BedWars.shop.getYml().getDouble(ConfigPath.SHOP_SPECIAL_SILVERFISH_DAMAGE));
+        }
+    }
+
+    public static void instantRespawn(Player player) {
+        PacketContainer packet = ProtocolLibrary.getProtocolManager()
+                .createPacket(PacketType.Play.Client.CLIENT_COMMAND);
+        packet.getClientCommands().write(0, EnumWrappers.ClientCommand.PERFORM_RESPAWN);
+        try {
+            ProtocolLibrary.getProtocolManager().receiveClientPacket(player, packet);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -28,6 +28,7 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.SetupSession;
+import com.andrei1058.bedwars.configuration.Permissions;
 import com.andrei1058.bedwars.configuration.Sounds;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -56,8 +57,9 @@ public class CmdJoin extends SubCommand {
             s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_USAGE));
             return true;
         }
-        if (args[0].equalsIgnoreCase("random")){
-            if (!Arena.joinRandomArena(p)){
+
+        if (args[0].equalsIgnoreCase("random")) {
+            if (!Arena.joinRandomArena(p)) {
                 s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_NO_EMPTY_FOUND));
                 Sounds.playSound("join-denied", p);
             } else {
@@ -65,7 +67,17 @@ public class CmdJoin extends SubCommand {
             }
             return true;
         }
+
         if (com.andrei1058.bedwars.commands.bedwars.MainCommand.isArenaGroup(args[0]) || args[0].contains("+")) {
+            List<String> blockedGroups = BedWars.config.getYml().getStringList("bw-join-blocked-groups");
+            if (blockedGroups.stream().anyMatch(g -> g.equalsIgnoreCase(args[0]))) {
+                if (!Permissions.hasPermission(p, Permissions.PERMISSION_BYPASS_BLOCKED_GROUPS)) {
+                    s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_GROUP_BLOCKED).replace("{group}", args[0]));
+                    Sounds.playSound("join-denied", p);
+                    return true;
+                }
+            }
+
             if (!Arena.joinRandomFromGroup(p, args[0])) {
                 s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_NO_EMPTY_FOUND));
                 Sounds.playSound("join-denied", p);
@@ -73,24 +85,52 @@ public class CmdJoin extends SubCommand {
                 Sounds.playSound("join-allowed", p);
             }
             return true;
-        } else if (Arena.getArenaByName(args[0]) != null) {
-            if (Arena.getArenaByName(args[0]).addPlayer(p, false)){
-                Sounds.playSound("join-allowed", p);
-            } else {
-                Sounds.playSound("join-denied", p);
+        }
+
+        // --- arena by name ---
+        if (Arena.getArenaByName(args[0]) != null) {
+            IArena arena = Arena.getArenaByName(args[0]);
+            List<String> blockedGroups = BedWars.config.getYml().getStringList("bw-join-blocked-groups");
+            if (arena.getGroup() != null && blockedGroups.stream().anyMatch(g -> g.equalsIgnoreCase(arena.getGroup()))) {
+                if (!p.hasPermission("bw.join.blockedgroups")) {
+                    s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_GROUP_BLOCKED).replace("{group}", arena.getGroup()));
+                    Sounds.playSound("join-denied", p);
+                    return true;
+                }
             }
-            return true;
-        } else if (Arena.getArenaByIdentifier(args[0]) != null) {
-            if (Arena.getArenaByIdentifier(args[0]).addPlayer(p, false)){
+
+            if (arena.addPlayer(p, false)) {
                 Sounds.playSound("join-allowed", p);
             } else {
                 Sounds.playSound("join-denied", p);
             }
             return true;
         }
+
+        // --- arena by identifier ---
+        if (Arena.getArenaByIdentifier(args[0]) != null) {
+            IArena arena = Arena.getArenaByIdentifier(args[0]);
+            List<String> blockedGroups = BedWars.config.getYml().getStringList("bw-join-blocked-groups");
+            if (arena.getGroup() != null && blockedGroups.stream().anyMatch(g -> g.equalsIgnoreCase(arena.getGroup()))) {
+                if (!p.hasPermission("bw.join.blockedgroups")) {
+                    s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_GROUP_BLOCKED).replace("{group}", arena.getGroup()));
+                    Sounds.playSound("join-denied", p);
+                    return true;
+                }
+            }
+
+            if (arena.addPlayer(p, false)) {
+                Sounds.playSound("join-allowed", p);
+            } else {
+                Sounds.playSound("join-denied", p);
+            }
+            return true;
+        }
+
         s.sendMessage(getMsg(p, Messages.COMMAND_JOIN_GROUP_OR_ARENA_NOT_FOUND).replace("{name}", args[0]));
         return true;
     }
+
 
     @Override
     public List<String> getTabComplete() {

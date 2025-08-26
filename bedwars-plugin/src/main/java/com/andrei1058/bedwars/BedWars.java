@@ -44,6 +44,7 @@ import com.andrei1058.bedwars.arena.upgrades.BaseListener;
 import com.andrei1058.bedwars.arena.upgrades.HealPoolListner;
 import com.andrei1058.bedwars.commands.QuickBuyCommand;
 import com.andrei1058.bedwars.commands.bedwars.MainCommand;
+import com.andrei1058.bedwars.commands.bedwars.SpectateCommand;
 import com.andrei1058.bedwars.commands.leave.LeaveCommand;
 import com.andrei1058.bedwars.commands.party.PartyCommand;
 import com.andrei1058.bedwars.commands.rejoin.RejoinCommand;
@@ -552,6 +553,9 @@ public class BedWars extends JavaPlugin implements Listener {
         }
 
         Bukkit.getScheduler().runTaskLater(this, () -> getLogger().info("This server is running in " + getServerType().toString() + " with auto-scale " + autoscale), 100L);
+
+        //Register new spectate command
+        getCommand("spectate").setExecutor(new SpectateCommand());
 
         // Initialize team upgrades
         com.andrei1058.bedwars.upgrades.UpgradesManager.init();

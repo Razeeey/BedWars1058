@@ -5,7 +5,7 @@
     <parent>
         <artifactId>BedWars1058</artifactId>
         <groupId>com.andrei1058.bedwars</groupId>
-        <version>22.9-SNAPSHOT</version>
+        <version>23.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>bedwars-plugin</artifactId>
@@ -23,6 +23,14 @@
 
     <repositories>
         <repository>
+            <id>andrei1058-releases</id>
+            <url>https://repo.andrei1058.dev/releases/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>simonsators-repo</id>
             <url>https://simonsator.de/repo/</url>
         </repository>
@@ -36,7 +44,7 @@
         </repository>
         <repository>
             <id>dmulloy2-repo</id>
-            <url>http://repo.dmulloy2.net/</url>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
         <repository>
             <id>codemc-public</id>
@@ -62,17 +70,14 @@
             <id>alessioDP-releases</id>
             <url>https://repo.alessiodp.com/releases/</url>
         </repository>
-        <repository>
-            <id>andrei1058-releases</id>
-            <url>https://repo.andrei1058.dev/releases/</url>
-        </repository>
+
         <repository>
             <id>citizens-repo</id>
             <url>https://maven.citizensnpcs.co/repo</url>
         </repository>
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -102,9 +107,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>com.github.dmulloy2.ProtocolLib</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version> <!-- Put the version you want here -->
+            <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -155,42 +160,42 @@
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_1_8_R3</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>resetadapter-slime</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_1_12_R1</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_v1_16_R3</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_v1_17_R1</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_v1_18_R2</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport_v1_19_R2</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport-common</artifactId>
-            <version>${project.version}</version>
+            <version>23.1</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -201,7 +206,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.2</version>
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -209,6 +214,21 @@
             <artifactId>vipfeatures-api</artifactId>
             <version>[1.0,)</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.andrei1058.bedwars</groupId>
+            <artifactId>bedwars-api</artifactId>
+            <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.comphenix.protocol</groupId>
+                    <artifactId>ProtocolLib-API</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.comphenix.executors</groupId>
+                    <artifactId>BukkitExecutors</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
@@ -298,7 +318,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <configuration>
                     <relocations>
                         <relocation>

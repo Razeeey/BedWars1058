@@ -106,6 +106,8 @@ public class Arena implements IArena {
     private static int gamesBeforeRestart = config.getInt(ConfigPath.GENERAL_CONFIGURATION_BUNGEE_MODE_GAMES_BEFORE_RESTART);
     public static HashMap<UUID, Integer> afkCheck = new HashMap<>();
     public static HashMap<UUID, Integer> magicMilk = new HashMap<>();
+    private final Map<Player, Integer> respawnNotifiedSeconds = new HashMap<>();
+
 
 
     private List<Player> players = new ArrayList<>();
@@ -726,8 +728,6 @@ public class Arena implements IArena {
             });
 
             leaving.remove(p);
-
-            p.sendMessage(getMsg(p, Messages.COMMAND_JOIN_SPECTATOR_MSG).replace("{arena}", this.getDisplayName()));
 
             /* update generator holograms for spectators */
             String iso = Language.getPlayerLanguage(p).getIso();
@@ -2546,45 +2546,70 @@ public class Arena implements IArena {
     @Override
     public boolean startReSpawnSession(Player player, int seconds) {
         if (respawnSessions.get(player) == null) {
+
             IArena arena = Arena.getArenaByPlayer(player);
             if (arena == null) {
                 return false;
             }
+
             if (!arena.isPlayer(player)) {
                 return false;
             }
+
+            // Clear inventory and log
             player.getInventory().clear();
+
             if (seconds > 1) {
-                // hide to others
-                for (Player playing : arena.getPlayers()) {
-                    if (playing.equals(player)) continue;
-                    BedWars.nms.spigotHidePlayer(player, playing);
-                }
-                PaperSupport.teleportC(player, getReSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+                // Teleport to respawn location
+                player.teleport(getReSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+                // Set flight
                 player.setAllowFlight(true);
                 player.setFlying(true);
+                showTime.put(player, seconds + 1);
 
-                respawnSessions.put(player, System.currentTimeMillis() + (seconds * 1000L));
+
+                // Store respawn session
+                long respawnTime = System.currentTimeMillis() + (seconds * 1000L);
+                respawnSessions.put(player, respawnTime);
+
+                // Schedule delayed task
                 Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> {
+
                     player.setAllowFlight(true);
                     player.setFlying(true);
 
                     nms.setCollide(player, this, false);
-                    // #274
+
+                    for (Player viewer : Bukkit.getOnlinePlayers()) {
+                        if (viewer.equals(player)) continue;
+                        BedWars.nms.hideEntity(player, viewer);
+                    }
+
+                    int hiddenCount = 0;
                     for (Player invisible : getShowTime().keySet()) {
                         BedWars.nms.hideArmor(invisible, player);
+                        hiddenCount++;
                     }
 
                     updateSpectatorCollideRule(player, false);
+
                     PaperSupport.teleportC(player, getReSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }, 10L);
             } else {
+
                 ITeam team = getTeam(player);
-                team.respawnMember(player);
+                if (team != null) {
+                    team.respawnMember(player);
+                } else {
+                }
             }
+
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -2718,4 +2743,10 @@ public class Arena implements IArena {
             }
         }
     }
+
+    public Map<Player, Integer> getRespawnNotifiedSeconds() {
+        return respawnNotifiedSeconds;
+    }
+
+
 }

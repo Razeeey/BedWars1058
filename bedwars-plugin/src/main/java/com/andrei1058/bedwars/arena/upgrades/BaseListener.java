@@ -72,6 +72,7 @@ public class BaseListener implements Listener {
         IArena a = Arena.getArenaByPlayer(e.getEntity());
         if (a == null) return;
         checkEvents(e.getEntity(), a);
+        e.setDeathMessage(null);
     }
 
     /**

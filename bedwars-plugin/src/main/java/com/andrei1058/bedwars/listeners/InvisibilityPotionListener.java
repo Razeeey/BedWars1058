@@ -25,6 +25,7 @@ import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.events.player.PlayerInvisibilityPotionEvent;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.sidebar.SidebarService;
+import net.minecraft.server.v1_8_R3.EntityPotion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.andrei1058.bedwars.BedWars.nms;
@@ -101,4 +103,6 @@ public class InvisibilityPotionListener implements Listener {
             }, 5L);
         }
     }
+
+
 }

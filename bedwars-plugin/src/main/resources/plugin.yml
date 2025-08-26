@@ -1,9 +1,10 @@
 name: BedWars1058
-api-version: '1.13'
 version: 23.3
 author: andrei1058
 description: 'BedWars minigame by andrei1058'
 main: com.andrei1058.bedwars.BedWars
+depend:
+  - ProtocolLib
 softdepend:
   - Vault
   - PlaceholderAPI
@@ -23,3 +24,9 @@ injector:
   version: 1
   nonce: dr-s9C02vUQ
   token: MGE3MDA1MjU1NTgw
+commands:
+  spectate:
+    description: Spectate a BedWars player
+    usage: /spectate <player>
+    aliases: [spec]
+    permission: bw.spectate

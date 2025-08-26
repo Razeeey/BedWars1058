@@ -61,8 +61,10 @@ public class English extends Language {
         yml.addDefault(Messages.COMMAND_LANG_SELECTED_NOT_EXIST, "{prefix}&cThis language doesn't exist!");
         yml.addDefault(Messages.COMMAND_LANG_SELECTED_SUCCESSFULLY, "{prefix}&aLanguage changed!");
         yml.addDefault(Messages.COMMAND_LANG_USAGE_DENIED, "{prefix}&cYou can't change the language during the game.");
+        yml.addDefault(Messages.COMMAND_STATS_DISABLED, "{prefix}&cThe statistics function is currently disabled.");
         yml.addDefault(Messages.COMMAND_JOIN_USAGE, "§a▪ §7Usage: /" + mainCmd + " join §o<arena/group>");
         yml.addDefault(Messages.COMMAND_JOIN_GROUP_OR_ARENA_NOT_FOUND, "{prefix}&cThere isn't any arena or arena group called: {name}");
+        yml.addDefault(Messages.COMMAND_JOIN_GROUP_BLOCKED, "{prefix}&cYou are not allowed to join that group.");
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_IS_FULL, "{prefix}&cThis arena is full!\n&aPlease consider donating for more features. &7&o(click)");
         yml.addDefault(Messages.COMMAND_JOIN_NO_EMPTY_FOUND, "{prefix}&cThere isn't any arena available right now ;(");
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_IS_FULL_OF_VIPS, "{prefix}&cWe apologise but this arena is full.\n&cWe know you're a donor but actually this arena is full of staff or/and donors.");
@@ -83,6 +85,8 @@ public class English extends Language {
         yml.addDefault(Messages.COMMAND_LEAVE_MSG, "{prefix}&7{player} &ehas quit!");
         yml.addDefault(Messages.COMMAND_NOT_ALLOWED_IN_GAME, "{prefix}&cYou can't do this during the game.");
         yml.addDefault(Messages.COMMAND_NOT_FOUND_OR_INSUFF_PERMS, "{prefix}&cCommand not found or you don't have permission!");
+        yml.addDefault(Messages.COMMAND_SPECTATE_SUCCESS, "{prefix}&eNow spectating {player}");
+        yml.addDefault(Messages.COMMAND_SPECTATE_USAGE, "{prefix}&cUsage: /spectate <player>");
         yml.addDefault(Messages.COMMAND_PARTY_HELP, Arrays.asList("&6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
                 "&aParty Commands:",
                 "&e/party help &7- &bPrints this help message",

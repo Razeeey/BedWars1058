@@ -28,6 +28,7 @@ import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.Misc;
 import com.andrei1058.bedwars.arena.SetupSession;
 import com.andrei1058.bedwars.commands.bedwars.MainCommand;
+import com.andrei1058.bedwars.configuration.Permissions;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,6 +51,7 @@ public class ArenaList extends SubCommand {
     public ArenaList(ParentCommand parent, String name) {
         super(parent, name);
         setPriority(3);
+        setPermission(Permissions.PERMISSION_LIST_ARENA);
         showInList(true);
         setDisplayInfo(Misc.msgHoverClick("§6 ▪ §7/" + com.andrei1058.bedwars.commands.bedwars.MainCommand.getInstance().getName() + " " + getSubCommandName() + ((getArenas().size() == 0) ? " §c(0 set)" : " §a(" + getArenas().size() + " set)"),
                 "§fShow available arenas", "/" + MainCommand.getInstance().getName() + " " + getSubCommandName(), ClickEvent.Action.RUN_COMMAND));

@@ -33,6 +33,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,9 +52,15 @@ public class CmdStats extends SubCommand {
 
     @Override
     public boolean execute(String[] args, CommandSender s) {
+        if (!com.andrei1058.bedwars.BedWars.config.isStatsCommandEnabled()) {
+            return false;
+        }
+
+
         if (s instanceof ConsoleCommandSender) return false;
         Player p = (Player) s;
         IArena a = Arena.getArenaByPlayer(p);
+
         if (a != null){
             if (!(a.getStatus() == GameState.starting || a.getStatus() == GameState.waiting)){
                 if (!a.isSpectator(p)){
@@ -61,12 +68,12 @@ public class CmdStats extends SubCommand {
                 }
             }
         }
+
         if (statsCoolDown.containsKey(p.getUniqueId())){
             if (System.currentTimeMillis() - 3000 >= statsCoolDown.get(p.getUniqueId())) {
                 statsCoolDown.replace(p.getUniqueId(), System.currentTimeMillis());
             } else {
-                //wait 3 seconds
-                return true;
+                return true; // still on cooldown
             }
         } else {
             statsCoolDown.put(p.getUniqueId(), System.currentTimeMillis());
@@ -83,6 +90,9 @@ public class CmdStats extends SubCommand {
 
     @Override
     public boolean canSee(CommandSender s, BedWars api) {
+        if (!com.andrei1058.bedwars.BedWars.config.isStatsCommandEnabled()) {
+            return false;
+        }
         if (s instanceof ConsoleCommandSender) return false;
 
         Player p = (Player) s;

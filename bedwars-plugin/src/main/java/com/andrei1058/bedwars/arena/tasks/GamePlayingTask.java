@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.andrei1058.bedwars.BedWars.nms;
@@ -190,17 +191,31 @@ public class GamePlayingTask implements Runnable, PlayingTask {
 
         /* INVISIBILITY FOR ARMOR */
         if (!getArena().getShowTime().isEmpty()) {
-            for (Map.Entry<Player, Integer> e : getArena().getShowTime().entrySet()) {
+            for (Iterator<Map.Entry<Player, Integer>> it = getArena().getShowTime().entrySet().iterator(); it.hasNext();) {
+                Map.Entry<Player, Integer> e = it.next();
+                Player hidden = e.getKey();
+
                 if (e.getValue() <= 0) {
-                    for (Player p : e.getKey().getWorld().getPlayers()) {
-                        nms.showArmor(e.getKey(), p);
-                        //nms.showPlayer(e.getKey(), p);
+                    // Respawn invis time ended → show player again
+                    for (Player viewer : Bukkit.getOnlinePlayers()) {
+                        if (viewer.equals(hidden)) continue;
+
+                        viewer.showPlayer(hidden);           // Bukkit API: respawn entity
+                        BedWars.nms.showArmor(hidden, viewer); // re-show armor packets
                     }
-                    e.getKey().removePotionEffect(PotionEffectType.INVISIBILITY);
-                    getArena().getShowTime().remove(e.getKey());
-                    Bukkit.getPluginManager().callEvent(new PlayerInvisibilityPotionEvent(PlayerInvisibilityPotionEvent.Type.REMOVED, getArena().getTeam(e.getKey()), e.getKey(), getArena()));
+
+                    it.remove();
+                    hidden.removePotionEffect(PotionEffectType.INVISIBILITY); // optional safeguard
+
+                    Bukkit.getPluginManager().callEvent(new PlayerInvisibilityPotionEvent(
+                            PlayerInvisibilityPotionEvent.Type.REMOVED,
+                            getArena().getTeam(hidden),
+                            hidden,
+                            getArena()
+                    ));
                 } else {
-                    getArena().getShowTime().replace(e.getKey(), e.getValue() - 1);
+                    BedWars.plugin.getLogger().info("ShowTime tick for " + hidden.getName() + ": " + e.getValue());
+                    e.setValue(e.getValue() - 1);
                 }
             }
         }
@@ -237,40 +252,53 @@ public class GamePlayingTask implements Runnable, PlayingTask {
 
         /* RESPAWN SESSION */
         if (!getArena().getRespawnSessions().isEmpty()) {
-            for (Map.Entry<Player, Long> e : getArena().getRespawnSessions().entrySet()) {
+            for (Iterator<Map.Entry<Player, Long>> it = getArena().getRespawnSessions().entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<Player, Long> e = it.next();
+                Player p = e.getKey();
+
                 int secondsTimeUntilRespawn = (int) ((e.getValue() - System.currentTimeMillis()) / 1000);
 
                 if (secondsTimeUntilRespawn <= 0) {
-                    IArena a = Arena.getArenaByPlayer(e.getKey());
+                    IArena a = Arena.getArenaByPlayer(p);
                     if (a == null) {
-                        getArena().getRespawnSessions().remove(e.getKey());
+                        it.remove();
                         continue;
                     }
-                    ITeam t = a.getTeam(e.getKey());
-                    if (t == null){
-                        a.addSpectator(e.getKey(), true, null);
+                    ITeam t = a.getTeam(p);
+                    if (t == null) {
+                        a.addSpectator(p, true, null);
                     } else {
-                        t.respawnMember(e.getKey());
-                        e.getKey().setAllowFlight(false);
-                        e.getKey().setFlying(false);
-
-                        getArena().getRespawnSessions().remove(e.getKey());
+                        t.respawnMember(p);
+                        p.setAllowFlight(false);
+                        p.setFlying(false);
                     }
+                    it.remove();
                 } else {
-                    nms.sendTitle(e.getKey(),
-                            getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_TITLE).replace("{time}", String.valueOf(secondsTimeUntilRespawn)),
-                            getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_SUBTITLE).replace("{time}",
-                                    String.valueOf(secondsTimeUntilRespawn)), 0, 30, 10);
-                    e.getKey().sendMessage(getMsg(e.getKey(), Messages.PLAYER_DIE_RESPAWN_CHAT).replace("{time}", String.valueOf(secondsTimeUntilRespawn)));
+                    // Always update the title (it overwrites itself smoothly)
+                    nms.sendTitle(
+                            p,
+                            getMsg(p, Messages.PLAYER_DIE_RESPAWN_TITLE).replace("{time}", String.valueOf(secondsTimeUntilRespawn)),
+                            getMsg(p, Messages.PLAYER_DIE_RESPAWN_SUBTITLE).replace("{time}", String.valueOf(secondsTimeUntilRespawn)),
+                            0, 30, 10
+                    );
+
+                    // Only send chat once per second
+                    Map<Player, Integer> notified = getArena().getRespawnNotifiedSeconds();
+                    Integer lastSecond = notified.get(p);
+                    if (lastSecond == null || lastSecond != secondsTimeUntilRespawn) {
+                        p.sendMessage(
+                                getMsg(p, Messages.PLAYER_DIE_RESPAWN_CHAT).replace("{time}", String.valueOf(secondsTimeUntilRespawn))
+                        );
+                        notified.put(p, secondsTimeUntilRespawn);
+                    }
                 }
             }
         }
     }
+            public void cancel () {
+                task.cancel();
+                task2.cancel();
+            }
 
-    public void cancel() {
-        task.cancel();
-        task2.cancel();
-    }
-}
-
+        }
 
